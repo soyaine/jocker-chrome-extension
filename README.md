@@ -49,7 +49,7 @@
 本插件的开发者是朵爷，常说的一句话是“朵爷又日常爱即刻了”，即刻ID是未枝丫，如果有问题欢迎反馈交流。  
 
 如果你想赞赏支持一下用于支付 Chrome Web Store 开发者账号的费用，请用微信扫这里并留言附上你的名字：
-![donate](https://github.com/Unknow-Y/tojike-chrome-extension/blob/master/dist/donate.jpeg)
+<img src="https://github.com/Unknow-Y/tojike-chrome-extension/blob/master/dist/donate.jpeg" style="width: 256px">
 
 ## Contributors
 制作这个插件的过程中，即友们提供了很多帮助。
