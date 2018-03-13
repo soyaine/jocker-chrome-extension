@@ -4,7 +4,7 @@
 
 **[在 Chrome Store 下载](https://chrome.google.com/webstore/detail/to-jike-extension/pnglcgpgmedjmknpknjedmkggedgdlpk)**
 
-![example](example.png)
+![example](https://github.com/Unknow-Y/tojike-chrome-extension/blob/master/dist/example.png)
 
 ## 功能简介
 
@@ -14,7 +14,7 @@
 
 你在电脑端登录了微信，有人通过微信分享给你一条来自即刻的消息，你在浏览器里打开时，有了这个插件，页面上的“APP内打开”就会变成“To Web”，点击这个按钮，就可以直接跳转去网页版即刻，无需打开手机，即可评论点赞参与互动。
 
-![how to use](how-to-use.png)
+![how to use](https://github.com/Unknow-Y/tojike-chrome-extension/blob/master/dist/how-to-use.gif)
 
 ## 下载地址
 
@@ -25,7 +25,7 @@
 如果你使用的是其它浏览器，可以下载使用[ To Jike 的 UserScript 版本](https://openuserjs.org/scripts/soyaine/To_Jike)。
 
 以 Firefox 为例：
-1. 安装[Greasemonkey](https://addons.mozilla.org/zh-CN/firefox/addon/greasemonkey/)
+1. 安装 [Greasemonkey](https://addons.mozilla.org/zh-CN/firefox/addon/greasemonkey/)
 2. 在 [ToJike Userscript](https://openuserjs.org/scripts/soyaine/To_Jike) 页面点击 Install 安装脚本
 
 ### CRX 版本
@@ -34,7 +34,7 @@
 2. 打开 Chrome 后在地址栏输入 `chrome://extensions`
 3. 把 .crx 文件拖入
 
-## 更新日志
+## 更新日志
 #### v1.2
 - 2018.03.13
 - 修复了 Firefox 中无法识别按钮的问题
@@ -43,12 +43,13 @@
 
 #### v1.1
 - 2018.03.09
-- 首版发布到 Chrome Web Store 了！实现了核心功能啦！
+- 首版发布到 Chrome Web Store 了！实现了核心功能啦！
 
 ## 关于作者
-本插件的开发者是朵爷，常说的一句话是“朵爷又日常爱即刻了”，即刻ID是未枝丫，如果有问题欢迎反馈交流。
+本插件的开发者是朵爷，常说的一句话是“朵爷又日常爱即刻了”，即刻ID是未枝丫，如果有问题欢迎反馈交流。  
+
 如果你想赞赏支持一下用于支付 Chrome Web Store 开发者账号的费用，请用微信扫这里并留言附上你的名字：
-![donate](donate.jpeg)
+![donate](https://github.com/Unknow-Y/tojike-chrome-extension/blob/master/dist/donate.jpeg)
 
 ## Contributors
 制作这个插件的过程中，即友们提供了很多帮助。
