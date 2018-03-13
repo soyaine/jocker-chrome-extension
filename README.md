@@ -30,7 +30,7 @@
 
 ### CRX 版本
 如果你不能访问 Chrome Web Store，可以下载最新版的 .crx 文件进行安装：
-1. 在 download 文件夹下载版本号最大的文件
+1. 在[ crx 文件夹](https://github.com/Unknow-Y/tojike-chrome-extension/tree/master/crx)下载版本号最大的文件
 2. 打开 Chrome 后在地址栏输入 `chrome://extensions`
 3. 把 .crx 文件拖入
 
@@ -49,7 +49,7 @@
 本插件的开发者是朵爷，常说的一句话是“朵爷又日常爱即刻了”，即刻ID是未枝丫，如果有问题欢迎反馈交流。  
 
 如果你想赞赏支持一下用于支付 Chrome Web Store 开发者账号的费用，请用微信扫这里并留言附上你的名字：
-<img src="https://github.com/Unknow-Y/tojike-chrome-extension/blob/master/dist/donate.jpeg" width="200">
+<img src="https://github.com/Unknow-Y/tojike-chrome-extension/blob/master/dist/donate.jpeg" width="480">
 
 ## Contributors
 制作这个插件的过程中，即友们提供了很多帮助。
