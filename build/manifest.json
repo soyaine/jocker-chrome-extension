@@ -22,8 +22,10 @@
   },  
   "content_scripts": [
     {
-      "matches": [
-        "https://m.okjike.com/*"
+      "matches": [ "*://*/*" ],
+      "include_globs": [
+        "*://m.okjike.com/*",
+        "*://m.ruguoapp.com/*"
       ],
       "js": ["tojike.js"]
     }

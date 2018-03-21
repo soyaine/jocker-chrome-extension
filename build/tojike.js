@@ -3,7 +3,8 @@ function toJike() {
   var type = path[1].slice(0, -1);
   
   if (type !== 'dailie' && type !== 'ho') {
-    var banner = document.querySelector('div.top-banner__show');
+    var banner = document.querySelector('div.top-banner__show')
+                 || document.querySelector('div.top-banner__transition-wrap')
     var btn = banner.querySelector('a.app-open-button');
     btn.remove();
 
