@@ -1,7 +1,7 @@
 {
   "name": "To Jike Extension",
   "description" : "Go to Web Jike from share page",
-  "version": "1.2",
+  "version": "2.0.0",
   "browser_action": {
     "default_icon": "icon128.png"
   },
@@ -23,9 +23,12 @@
   "content_scripts": [
     {
       "matches": [
-        "https://m.okjike.com/*"
+        "https://web.okjike.com/*"
       ],
-      "js": ["tojike.js"]
+      "js": ["notification.js"]
     }
+  ],
+  "permissions": [
+    "https://app.jike.ruguoapp.com/"
   ]
 }
