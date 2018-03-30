@@ -1,0 +1,49 @@
+<div class="comment-card is-flex">
+  <div class="comment-card-left">
+    <div class="user-avatar ">
+        <div class="user-avatar-content" style="background-image: url(&quot;${render.thumbnailUrl}&quot;);"></div>
+    </div>
+  </div>
+  <div class="comment-card-right">
+    <div class="comment-card-header">
+        <a href="/user/${render.username}/post">
+          <span class="comment-card-header-screenname">${render.screenName}</span></a>
+          <span class="comment-card-header-time">${render.time}</span>
+        </div>
+    <div class="comment-card-main">
+        <div class="comment-card-comment-section">
+          <div class="comment-card-main-content">
+              <div class="readable-content">
+                <div class="readable-content-collapse">
+                  <span>${render.content}</span>
+                  <span class="comment-card-header-time">${render.picture ? '有配图哦' : ''}</span>
+                </div>
+              </div>
+          </div>
+        </div>
+        <div class="user-activity-repost" style="margin-right: 20px;">
+            <a class="user-activity-repost-card" href="${render.targetUrl}" target="_blank">
+              <div class="user-activity-repost-card-body">
+                  <div class="user-activity-post">
+                    <div class="readable-content">
+                        <div class="readable-content-collapse" style="">
+                            <span>${render.targetContent}</span>
+                        </div>
+                    </div>
+                  </div>
+              </div>
+            </a>
+        </div>
+    </div>
+  </div>
+</div>
+
+<p>
+    https://web.okjike.com/post-detail/5abe03f348d6580016248547/originalPost?commentId=5abe040288cf140017a56fa6
+</p>
+
+<code>
+  type
+    COMMENT_PERSONAL_UPDATE
+    REPLY_TO_COMMENT
+</code>
