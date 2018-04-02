@@ -1,32 +1,32 @@
-# 微即分（Love Jike extension）
+# 微即分（To Jike extension）
 
-帮你在「网页版即刻」获得更好体验的插件。
+「即刻分享页」到「网页版即刻」的传送门。
 
-**[在 Chrome Store 下载](https://chrome.google.com/webstore/detail/love-jike-extension/pnglcgpgmedjmknpknjedmkggedgdlpk)**
+**[在 Chrome Store 下载](https://chrome.google.com/webstore/detail/to-jike-extension/pnglcgpgmedjmknpknjedmkggedgdlpk)**
 
-![example](https://github.com/Unknow-Y/tojike-chrome-extension/blob/master/dist/example-v2.0.1.png)
+![example](https://github.com/Unknow-Y/tojike-chrome-extension/blob/master/dist/example.png)
 
 ## 功能简介
 
 [即刻App](https://okjike.com/)是一个很棒的资讯+社交平台，在这里可以追踪你想知道的信息，也能遇到有趣的即友。
 
-现在即刻有了网页版，本插件解决的是网页版目前还没有官方支持的需求，期待即刻越来越好。
+现在即刻有了网页版，本插件解决的就是手机和网页之间的衔接问题。
 
-**功能列表**
-- ~「即刻分享页」到「网页版即刻」的传送门（已官方支持）[v1.0文档](https://github.com/Unknow-Y/tojike-chrome-extension/blob/master/his/README-v1.0.md)~
-- 在网页版查看通知详情
+你在电脑端登录了微信，有人通过微信分享给你一条来自即刻的消息，你在浏览器里打开时，有了这个插件，页面上的“APP内打开”就会变成“To Web”，点击这个按钮，就可以直接跳转去网页版即刻，无需打开手机，即可评论点赞参与互动。
+
+![how to use](https://github.com/Unknow-Y/tojike-chrome-extension/blob/master/dist/how-to-use.gif)
 
 ## 下载地址
 
 ### Chrome extension 版本
-[到 Chrome Store 下载](https://chrome.google.com/webstore/detail/love-jike-extension/pnglcgpgmedjmknpknjedmkggedgdlpk)
+[到 Chrome Store 下载](https://chrome.google.com/webstore/detail/to-jike-extension/pnglcgpgmedjmknpknjedmkggedgdlpk)
 
 ### UserScript 版本
-如果你使用的是其它浏览器，可以下载使用[ Love Jike 的 UserScript 版本](https://openuserjs.org/scripts/soyaine/Love_Jike)。
+如果你使用的是其它浏览器，可以下载使用[ To Jike 的 UserScript 版本](https://openuserjs.org/scripts/soyaine/To_Jike)。
 
 以 Firefox 为例：
 1. 安装 [Greasemonkey](https://addons.mozilla.org/zh-CN/firefox/addon/greasemonkey/)
-2. 在 [ToJike Userscript](https://openuserjs.org/scripts/soyaine/Love_Jike/) 页面点击 Install 安装脚本
+2. 在 [ToJike Userscript](https://openuserjs.org/scripts/soyaine/To_Jike) 页面点击 Install 安装脚本
 
 ### CRX 版本
 如果你不能访问 Chrome Web Store，可以下载最新版的 .crx 文件进行安装：
@@ -35,31 +35,14 @@
 3. 把 .crx 文件拖入
 
 ## 更新日志
-**TODO**
-- 点击 icon 即可打开官网
-- 通知
-  - 支持评论-评论类型消息 √
-  - 支持评论-动态类型消息 √
-  - 支持评论-即刻消息类型消息 √
-  - 支持关注类型消息
-  - 跳转到原消息的指定评论下
-  - Top 按钮
-- 分享
-  - 支持从网页版分享到微信
-
-#### v2.0.1
-2018.03.30
-- 在网页版可以看到通知，包括三种评论类型
-- 由于官方支持了分享页的直接跳转，所以去掉了此功能
-
 #### v1.2
-2018.03.13
+- 2018.03.13
 - 修复了 Firefox 中无法识别按钮的问题
 - 在个别页面不显示 To Web 按钮，包括即刻小报和热门
 - 发布了 Userscript 版本
 
 #### v1.1
-2018.03.09
+- 2018.03.09
 - 首版发布到 Chrome Web Store 了！实现了核心功能啦！
 
 ## 关于作者

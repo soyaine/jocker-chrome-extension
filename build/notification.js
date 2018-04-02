@@ -101,7 +101,7 @@ function getNoti() {
       return innerHTML;
     });
     var noti = document.querySelector('div.duoie-noti');
-    noti.innerHTML = `<div class="comments-timeline-container-title">近期的评论和关注</div><div>${filterData.join('')}</div>`;
+    noti.innerHTML = `<div class="comments-timeline-container-title">近期的评论</div><div>${filterData.join('')}</div>`;
   });
 }
 
