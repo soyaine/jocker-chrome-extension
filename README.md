@@ -26,7 +26,7 @@
 
 以 Firefox 为例：
 1. 安装 [Greasemonkey](https://addons.mozilla.org/zh-CN/firefox/addon/greasemonkey/)
-2. 在 [ToJike Userscript](https://openuserjs.org/scripts/soyaine/Love_Jike/) 页面点击 Install 安装脚本
+2. 在 [Love Jike Userscript](https://openuserjs.org/scripts/soyaine/Love_Jike/) 页面点击 Install 安装脚本
 
 ### CRX 版本
 如果你不能访问 Chrome Web Store，可以下载最新版的 .crx 文件进行安装：
