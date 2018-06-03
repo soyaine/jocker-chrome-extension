@@ -1,4 +1,4 @@
-# 微即分（Love Jike extension）
+# Jike extension
 
 帮你在「网页版即刻」获得更好体验的插件。
 
@@ -36,8 +36,9 @@
 
 ## 更新日志
 #### v2.0.3
-2018.06.02
+2018.06.03
 - 支持点击插件图标打开网页版即刻
+- 新增被关注的通知显示
 
 #### v2.0.1
 2018.03.30
@@ -55,7 +56,7 @@
 - 首版发布到 Chrome Web Store 了！实现了核心功能啦！
 
 ## 关于作者
-本插件的开发者是朵爷，常说的一句话是“朵爷又日常爱即刻了”，即刻ID是未枝丫，如果有问题欢迎反馈交流。  
+本插件的开发者是朵爷，常说的一句话是“朵爷又日常爱即刻了”，即刻ID是[未枝丫](http://web.okjike.com/user/soyaine)，如果有问题欢迎反馈交流。  
 
 如果你想赞赏支持一下用于支付 Chrome Web Store 开发者账号的费用，请用微信扫这里并留言附上你的名字：
 <img src="https://github.com/Unknow-Y/tojike-chrome-extension/blob/master/dist/donate.jpeg" width="480">
