@@ -17,15 +17,17 @@ function getNoti() {
     var filterData = res.data.filter(function(data) {
       if (data.type === 'REPLIED_TO_PERSONAL_UPDATE_COMMENT'){
         var action = data.actionItem;
+        var ifOriginal = action.replyToComment.targetType === 'ORIGINAL_POST' ? 'originalPost' : '';
         data.renderType = 'content';
         data.render = {
+          type: '回复了你',
           thumbnailUrl: action.user.avatarImage.thumbnailUrl,
           username: action.user.username,
           screenName: action.user.screenName,
-          time: new Date(data.createdAt).toLocaleString(),
+          time: new Date(data.createdAt).toLocaleString().slice(5),
           content: action.content,
           picture: !!(action.pictureUrls.length),
-          targetUrl: `/post-detail/${action.replyToComment.targetId}/originalPost?commentId=${action.commentId}`,
+          targetUrl: `/post-detail/${action.replyToComment.targetId}/${ifOriginal}`,
           targetContent: action.replyToComment.content
         }
         return true;
@@ -33,10 +35,11 @@ function getNoti() {
         var action = data.actionItem;
         data.renderType = 'content';
         data.render = {
+          type: '回复了你',
           thumbnailUrl: action.user.avatarImage.thumbnailUrl,
           username: action.user.username,
           screenName: action.user.screenName,
-          time: new Date(data.createdAt).toLocaleString(),
+          time: new Date(data.createdAt).toLocaleString().slice(5),
           content: action.content,
           picture: !!(action.pictureUrls.length),
           targetUrl: profileUrl,
@@ -47,13 +50,30 @@ function getNoti() {
         var action = data.actionItem;
         data.renderType = 'content';
         data.render = {
+          type: '回复了你',
           thumbnailUrl: action.user.avatarImage.thumbnailUrl,
           username: action.user.username,
           screenName: action.user.screenName,
-          time: new Date(data.createdAt).toLocaleString(),
+          time: new Date(data.createdAt).toLocaleString().slice(5),
           content: action.content,
           picture: !!(action.pictureUrls.length),
-          targetUrl: `/message-detail/${action.targetId}/originalMessage?commentId=${action.commentId}`,
+          targetUrl: `/message-detail/${action.targetId}/originalMessage?commentId=${action.commentId}/`,
+          targetContent: data.referenceItem.content
+        };
+        return true;
+      } else if (data.type === 'PERSONAL_UPDATE_REPOSTED') {
+        var action = data.actionItem;
+        data.renderType = 'content';
+        data.render = {
+          type: '转发了你的动态',
+          nolink: true,
+          thumbnailUrl: action.users[0].avatarImage.thumbnailUrl,
+          username: action.users[0].username,
+          screenName: action.users[0].screenName,
+          time: new Date(data.createdAt).toLocaleString().slice(5),
+          content: action.content,
+          picture: false,
+          targetUrl: '#',
           targetContent: data.referenceItem.content
         };
         return true;
@@ -78,22 +98,25 @@ function getNoti() {
                         <div class="comment-card-right">
                           <div class="comment-card-header">
                               <a href="/user/${render.username}/post">
-                                <span class="comment-card-header-screenname">${render.screenName}</span></a>
-                                <span class="comment-card-header-time">${render.time}</span>
-                              </div>
+                                <span class="comment-card-header-screenname">${render.screenName}</span>
+                              </a>
+                              <span class="comment-card-header-time">在 ${render.time}</span>
+                              <span class="comment-card-header-time"> ${render.type}</span>
+                          </div>
                           <div class="comment-card-main">
                               <div class="comment-card-comment-section">
                                 <div class="comment-card-main-content">
                                     <div class="readable-content">
                                       <div class="readable-content-collapse">
+                                        <span class="comment-card-header-time">${render.nolink ? '↑可以去TA的主页看这条动态哦<br/>' : ''}</span>
                                         <span>${render.content}</span>
-                                        <span class="comment-card-header-time">${render.picture ? '↓去原消息看评论配图哦' : ''}</span>
+                                        <span class="comment-card-header-time">${render.picture ? '<br/>↓有配图，可以去原消息查看哦' : ''}</span>
                                       </div>
                                     </div>
                                 </div>
                               </div>
                               <div class="user-activity-repost" style="margin-right: 20px;">
-                                  <a class="user-activity-repost-card" href="${render.targetUrl}" target="_blank">
+                                  <a class="user-activity-repost-card" href="${render.targetUrl}" target="${render.nolink ? '' : '_blank'}">
                                     <div class="user-activity-repost-card-body">
                                         <div class="user-activity-post">
                                           <div class="readable-content">
@@ -144,21 +167,24 @@ function getNoti() {
       return innerHTML;
     });
     var noti = document.querySelector('div.duoie-noti');
-    noti.innerHTML = `<a class="comment-card-header-time" style="float: right;" href="https://github.com/Unknow-Y/tojike-chrome-extension">Ⓙ 此功能于即刻星球民间实现提供</a>
+    noti.innerHTML = `<a class="comment-card-header-time" style="float: right; margin-right: .5em;" href="https://web.okjike.com/post-detail/5b14dd7c0801ae001741e264/originalPost">Ⓙ 此功能非官方哟，戳这里反馈你的想法 </a>
                       <div class="comments-timeline-container-title">近期的新通知</div>
                       <div>${filterData.join('')}</div>`;
   });
 }
 
 function init(params) {
-  var btn = document.querySelector('.header-item.header-item-icon');
   var insertBody = document.getElementsByClassName('row column')[1];
   var noti = document.createElement('div');
   noti.setAttribute('class', 'duoie-noti comments-timeline-container');
   noti.setAttribute('style', 'height: 40vh; overflow-y: scroll; margin-bottom: 5px; background: #fff;');
   insertBody.appendChild(noti);
-  btn.addEventListener('click', getNoti);
   getNoti();
+
+  setTimeout(function() {
+    var btn = document.querySelector('.header-item.header-item-icon');
+    btn.addEventListener('click', getNoti);
+  }, 3000);
 }
 
 window.addEventListener("load", init);
