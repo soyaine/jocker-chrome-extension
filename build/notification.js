@@ -1,11 +1,11 @@
 function getNoti() {
   var token = localStorage.getItem('auth-token');
   var req = {
-    method: 'get',
-    headers: {
-      'app-version': '4.0.0',
-      'x-jike-app-auth-jwt': token,
-      'x-from': 'duoie-love-jike'
+    "method": "POST",
+    "headers": {
+      "x-jike-app-auth-jwt": token,
+      "x-from": "duoie-love-jike",
+      "app-version": "4.7.0"
     }
   };
   var profileUrl = document.querySelector('.user-nav ul.menu li.menu-item a').href;
@@ -15,54 +15,59 @@ function getNoti() {
   })
   .then(function(res) {
     var filterData = res.data.filter(function(data) {
+      if (data.linkUrl) {
+        var url = new URL(data.linkUrl);
+        var targetType = url.searchParams.get('targetType');
+        var targetId = url.searchParams.get('targetId');
+      }
+      var action = data.actionItem;
+      var user = action.user || action.users[0];
+
       if (data.type === 'REPLIED_TO_PERSONAL_UPDATE_COMMENT'){
-        var action = data.actionItem;
-        var ifOriginal = action.replyToComment.targetType === 'ORIGINAL_POST' ? 'originalPost' : '';
+        var ifOriginal = targetType === 'ORIGINAL_POST' ? 'originalPost' : '';
         data.renderType = 'content';
         data.render = {
           type: '回复了你',
-          thumbnailUrl: action.user.avatarImage.thumbnailUrl,
-          username: action.user.username,
-          screenName: action.user.screenName,
+          thumbnailUrl: user.avatarImage.thumbnailUrl,
+          username: user.username,
+          screenName: user.screenName,
           time: new Date(data.createdAt).toLocaleString().slice(5),
           content: action.content,
-          picture: !!(action.pictureUrls.length),
-          targetUrl: `/post-detail/${action.replyToComment.targetId}/${ifOriginal}`,
-          targetContent: action.replyToComment.content
+          picture: !!(action.pictureUrls && action.pictureUrls.length),
+          targetUrl: `/post-detail/${targetId}/${ifOriginal}`,
+          targetContent: data.referenceItem.content
         }
         return true;
       } else if (data.type === 'COMMENT_PERSONAL_UPDATE') {
-        var action = data.actionItem;
+        var ifOriginal = data.linkType === 'ORIGINAL_POST' ? 'originalPost' : '';
         data.renderType = 'content';
         data.render = {
           type: '回复了你',
-          thumbnailUrl: action.user.avatarImage.thumbnailUrl,
-          username: action.user.username,
-          screenName: action.user.screenName,
+          thumbnailUrl: user.avatarImage.thumbnailUrl,
+          username: user.username,
+          screenName: user.screenName,
           time: new Date(data.createdAt).toLocaleString().slice(5),
           content: action.content,
-          picture: !!(action.pictureUrls.length),
-          targetUrl: profileUrl,
+          picture: !!(action.pictureUrls && action.pictureUrls.length),
+          targetUrl: `/post-detail/${data.referenceItem.id}/${ifOriginal}`,
           targetContent: data.referenceItem.content
         };
         return true;
       } else if (data.type === 'REPLY_TO_COMMENT') {
-        var action = data.actionItem;
         data.renderType = 'content';
         data.render = {
           type: '回复了你',
-          thumbnailUrl: action.user.avatarImage.thumbnailUrl,
-          username: action.user.username,
-          screenName: action.user.screenName,
+          thumbnailUrl: user.avatarImage.thumbnailUrl,
+          username: user.username,
+          screenName: user.screenName,
           time: new Date(data.createdAt).toLocaleString().slice(5),
           content: action.content,
-          picture: !!(action.pictureUrls.length),
-          targetUrl: `/message-detail/${action.targetId}/originalMessage?commentId=${action.commentId}/`,
+          picture: !!(action.pictureUrls && action.pictureUrls.length),
+          targetUrl: `/message-detail/${targetId}/originalMessage?commentId=${action.commentId}/`,
           targetContent: data.referenceItem.content
         };
         return true;
       } else if (data.type === 'PERSONAL_UPDATE_REPOSTED') {
-        var action = data.actionItem;
         data.renderType = 'content';
         data.render = {
           type: '转发了你的动态',
@@ -73,7 +78,7 @@ function getNoti() {
           time: new Date(data.createdAt).toLocaleString().slice(5),
           content: action.content,
           picture: false,
-          targetUrl: '#',
+          targetUrl: `/post-detail/${action.id}/repost`,
           targetContent: data.referenceItem.content
         };
         return true;
@@ -108,7 +113,6 @@ function getNoti() {
                                 <div class="comment-card-main-content">
                                     <div class="readable-content">
                                       <div class="readable-content-collapse">
-                                        <span class="comment-card-header-time">${render.nolink ? '↑可以去TA的主页看这条动态哦<br/>' : ''}</span>
                                         <span>${render.content}</span>
                                         <span class="comment-card-header-time">${render.picture ? '<br/>↓有配图，可以去原消息查看哦' : ''}</span>
                                       </div>
