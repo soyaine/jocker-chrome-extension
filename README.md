@@ -1,4 +1,4 @@
-# Jike extension
+# :hearts: Jike Extension
 
 帮你在「网页版即刻」获得更好体验的插件。
 
@@ -15,6 +15,10 @@
 **功能列表**
 - ~「即刻分享页」到「网页版即刻」的传送门（已官方支持）[v1.0文档](https://github.com/Unknow-Y/tojike-chrome-extension/blob/master/his/README-v1.0.md)~
 - 在网页版查看通知详情
+  - [x] 评论通知
+  - [x] 回复通知
+  - [x] 关注通知
+  - [] 点赞通知
 
 ## 下载地址
 
