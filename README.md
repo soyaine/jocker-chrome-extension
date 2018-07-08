@@ -18,7 +18,13 @@
 
 ## 下载地址
 
-### Chrome extension 版本
+版本 | 更新进度 | 下载
+----|----|----
+Chrome Extension 版本 | 2.0.8 | [到 Chrome Store 下载](https://chrome.google.com/webstore/detail/love-jike-extension/pnglcgpgmedjmknpknjedmkggedgdlpk)
+UserScript 版本 | 2.0.1 | [在 OpenUserJS 下载](https://openuserjs.org/scripts/soyaine/Love_Jike)
+crx 版本 | 2.0.8 | 可以在[ crx 文件夹](https://github.com/Unknow-Y/tojike-chrome-extension/tree/master/crx) 找到
+
+### Chrome Extension 版本
 [到 Chrome Store 下载](https://chrome.google.com/webstore/detail/love-jike-extension/pnglcgpgmedjmknpknjedmkggedgdlpk)
 
 ### UserScript 版本
