@@ -8,53 +8,32 @@ function getNoti() {
       'x-from': 'duoie-love-jike'
     }
   };
-  var profileUrl = document.querySelector('.user-nav ul.menu li.menu-item a').href;
   fetch('https://app.jike.ruguoapp.com/1.0/notifications/list', req)
   .then(function(res) {
     return res.json();
   })
   .then(function(res) {
     var filterData = res.data.filter(function(data) {
+      var action = data.actionItem;
+      data.render = {
+        thumbnailUrl: action.user.avatarImage.thumbnailUrl,
+        username: action.user.username,
+        screenName: action.user.screenName,
+        time: new Date(data.createdAt).toLocaleString('zh-cn'),
+        content: action.content,
+        picture: !!(action.pictureUrls.length),
+        targetContent: data.referenceItem.content
+      }
+
       if (data.type === 'REPLIED_TO_PERSONAL_UPDATE_COMMENT'){
-        var action = data.actionItem;
-        data.render = {
-          thumbnailUrl: action.user.avatarImage.thumbnailUrl,
-          username: action.user.username,
-          screenName: action.user.screenName,
-          time: new Date(data.createdAt).toLocaleString(),
-          content: action.content,
-          picture: !!(action.pictureUrls.length),
-          targetUrl: `/post-detail/${action.replyToComment.targetId}/originalPost?commentId=${action.commentId}`,
-          targetContent: action.replyToComment.content
-        }
+        data.render.targetUrl = `/post-detail/${action.replyToComment.targetId}/originalPost?commentId=${action.commentId}`
+        data.render.targetContent = action.replyToComment.content
         return true;
       } else if (data.type === 'COMMENT_PERSONAL_UPDATE') {
-        var action = data.actionItem;
-        data.render = {
-          thumbnailUrl: action.user.avatarImage.thumbnailUrl,
-          username: action.user.username,
-          screenName: action.user.screenName,
-          time: new Date(data.createdAt).toLocaleString(),
-          content: action.content,
-          picture: !!(action.pictureUrls.length),
-          targetUrl: profileUrl,
-          targetContent: data.referenceItem.content
-        };
+        data.render.targetUrl = document.querySelector('.user-nav ul.menu li.menu-item a').href
         return true;
       } else if (data.type === 'REPLY_TO_COMMENT') {
-        console.log(data);
-        console.log('REPLY_TO_COMMENT');
-        var action = data.actionItem;
-        data.render = {
-          thumbnailUrl: action.user.avatarImage.thumbnailUrl,
-          username: action.user.username,
-          screenName: action.user.screenName,
-          time: new Date(data.createdAt).toLocaleString(),
-          content: action.content,
-          picture: !!(action.pictureUrls.length),
-          targetUrl: `/message-detail/${action.targetId}/originalMessage?commentId=${action.commentId}`,
-          targetContent: data.referenceItem.content
-        };
+        data.render.targetUrl = `/message-detail/${action.targetId}/originalMessage?commentId=${action.commentId}`
         return true;
       } return false;
     }).map(function(data) {

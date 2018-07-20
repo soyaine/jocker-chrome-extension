@@ -14,6 +14,7 @@ function getNoti() {
     return res.json();
   })
   .then(function(res) {
+    console.log(res.data)
     var filterData = res.data.filter(function(data) {
       if (data.linkUrl) {
         var url = new URL(data.linkUrl);
@@ -21,77 +22,79 @@ function getNoti() {
         var targetId = url.searchParams.get('targetId');
       }
       var action = data.actionItem;
-      var user = action.user || action.users[0];
+
+      data.render = {
+        thumbnailUrl: action.users[0].avatarImage.thumbnailUrl,
+        username: action.users[0].username,
+        screenName: action.users[0].screenName,
+        time: new Date(data.createdAt).toLocaleString('zh-cn').slice(5),
+        content: action.content,
+        picture: !!(action.pictureUrls && action.pictureUrls.length),
+        targetContent: data.referenceItem ? data.referenceItem.content : '',
+        users: action.users
+      }
 
       if (data.type === 'REPLIED_TO_PERSONAL_UPDATE_COMMENT'){
         var ifOriginal = targetType === 'ORIGINAL_POST' ? 'originalPost' : '';
         data.renderType = 'content';
-        data.render = {
-          type: '回复了你',
-          thumbnailUrl: user.avatarImage.thumbnailUrl,
-          username: user.username,
-          screenName: user.screenName,
-          time: new Date(data.createdAt).toLocaleString().slice(5),
-          content: action.content,
-          picture: !!(action.pictureUrls && action.pictureUrls.length),
-          targetUrl: `/post-detail/${targetId}/${ifOriginal}`,
-          targetContent: data.referenceItem.content
-        }
+        data.render.note = '回复了你';
+        data.render.targetUrl = `/post-detail/${targetId}/${ifOriginal}`;
         return true;
       } else if (data.type === 'COMMENT_PERSONAL_UPDATE') {
         var ifOriginal = data.linkType === 'ORIGINAL_POST' ? 'originalPost' : '';
         data.renderType = 'content';
-        data.render = {
-          type: '回复了你',
-          thumbnailUrl: user.avatarImage.thumbnailUrl,
-          username: user.username,
-          screenName: user.screenName,
-          time: new Date(data.createdAt).toLocaleString().slice(5),
-          content: action.content,
-          picture: !!(action.pictureUrls && action.pictureUrls.length),
-          targetUrl: `/post-detail/${data.referenceItem.id}/${ifOriginal}`,
-          targetContent: data.referenceItem.content
-        };
+        data.render.note = '评论了你的动态';
+        data.render.targetUrl = `/post-detail/${data.referenceItem.id}/${ifOriginal}`;
         return true;
       } else if (data.type === 'REPLY_TO_COMMENT') {
         data.renderType = 'content';
-        data.render = {
-          type: '回复了你',
-          thumbnailUrl: user.avatarImage.thumbnailUrl,
-          username: user.username,
-          screenName: user.screenName,
-          time: new Date(data.createdAt).toLocaleString().slice(5),
-          content: action.content,
-          picture: !!(action.pictureUrls && action.pictureUrls.length),
-          targetUrl: `/message-detail/${targetId}/originalMessage?commentId=${action.commentId}/`,
-          targetContent: data.referenceItem.content
-        };
+        data.render.note = '回复了你';
+        data.render.targetUrl = `/message-detail/${targetId}/originalMessage`;
         return true;
       } else if (data.type === 'PERSONAL_UPDATE_REPOSTED') {
         data.renderType = 'content';
-        data.render = {
-          type: '转发了你的动态',
-          nolink: true,
-          thumbnailUrl: action.users[0].avatarImage.thumbnailUrl,
-          username: action.users[0].username,
-          screenName: action.users[0].screenName,
-          time: new Date(data.createdAt).toLocaleString().slice(5),
-          content: action.content,
-          picture: false,
-          targetUrl: `/post-detail/${action.id}/repost`,
-          targetContent: data.referenceItem.content
-        };
+        data.render.note = '转发了你的动态';
+        data.render.nolink = true;
+        data.render.picture = false;
+        data.render.targetUrl = `/post-detail/${action.id}/repost`;
         return true;
       } else if (data.type === 'USER_FOLLOWED') {
-        data.renderType = 'users';
-        data.render = {
-          users: data.actionItem.users
-        };
+        data.renderType = 'users_follow';
+        data.render.note = '有人关注了你嗷~';
+        data.render.users = data.actionItem.users;
         return true;
-      } return false;
+      } else if (data.type === 'LIKE_PERSONAL_UPDATE_COMMENT') {
+        data.renderType = 'users_like';
+        data.render.note = `有 ${data.actionItem.usersCount} 个人给这条评论点赞喽~`;
+        data.render.users = data.actionItem.users;
+        // if (!targetType && data.linkUrl) {
+        //   data.render.targetUrl = `/post-detail/${data.linkUrl.replace(/jike:\/\/page\.jk\/(\w+)\/(.+)/, "$2/$1")}`;
+        // } else {
+        //   data.render.targetUrl = `/post-detail/${targetId}/${getCamelName(targetType)}`;
+        // }
+        console.log(targetType)
+        console.log(data.linkUrl)
+        if (targetType) {
+          data.render.targetUrl = `/post-detail/${targetId}/${getCamelName(targetType)}`;
+        } else if (data.linkUrl) {
+          data.render.targetUrl = `/post-detail/${data.linkUrl.replace(/jike:\/\/page\.jk\/(\w+)\/(.+)/, "$2/$1")}`;
+        }
+        return true;
+      } else if (data.type === 'LIKE_PERSONAL_UPDATE') {
+        data.renderType = 'users_like';
+        data.render.note = `有 ${data.actionItem.usersCount} 个人给这条动态点赞啦~`;
+        data.render.users = data.actionItem.users;
+        if (targetType) {
+          data.render.targetUrl = `/post-detail/${targetId}/${getCamelName(targetType)}`;
+        } else if (data.linkUrl) {
+          data.render.targetUrl = `/post-detail/${data.linkUrl.replace(/jike:\/\/page\.jk\/(\w+)\/(.+)/, "$2/$1")}`;
+        }
+        return true;
+      } else return false;
     }).map(function(data) {
       var render = data.render;
       var innerHTML = '';
+      console.log(render.targetUrl);
 
       if (data.renderType === 'content') {
         innerHTML = `<div class="comment-card is-flex">
@@ -106,7 +109,7 @@ function getNoti() {
                                 <span class="comment-card-header-screenname">${render.screenName}</span>
                               </a>
                               <span class="comment-card-header-time">在 ${render.time}</span>
-                              <span class="comment-card-header-time"> ${render.type}</span>
+                              <span class="comment-card-header-time"> ${render.note}</span>
                           </div>
                           <div class="comment-card-main">
                               <div class="comment-card-comment-section">
@@ -135,23 +138,29 @@ function getNoti() {
                           </div>
                         </div>
                       </div>`;
-      } else if (data.renderType === 'users') {
+      } else if (data.renderType === 'users_follow' || data.renderType === 'users_like') {
         var usersHTML = data.render.users.map(function(user){
-          return `<div class="user-activity-repost" style="margin-right: 20px;">
-                    <a class="user-activity-repost-card" href="/user/${user.username}" target="_blank">
-                      <div class="user-activity-repost-card-body">
-                          <div class="user-activity-post">
-                            <div class="readable-content">
-                                <div class="readable-content-collapse" style="">
-                                    <img style="width: 25px; height: 25px; border-radius: 50%;" src="${user.avatarImage.thumbnailUrl}">
-                                    <span>${user.screenName}</span>
-                                </div>
-                            </div>
-                          </div>
-                      </div>
-                    </a>
-                  </div>`;
+          return `<a class="" href="/user/${user.username}" target="_blank">
+                    <div class="readable-content-collapse" style="margin-top: 3px; margin-bottom: 3px;">
+                        <img style="width: 25px; height: 25px; border-radius: 50%;" src="${user.avatarImage.thumbnailUrl}">
+                        <span>${user.screenName}</span>
+                    </div>
+                  </a>`;
         }).join('');
+        var referHTML = data.renderType === 'users_follow' ? '' 
+                        : `<div class="user-activity-repost" style="margin-right: 20px;">
+                              <a class="user-activity-repost-card" href="${render.targetUrl}" target="${render.nolink ? '' : '_blank'}">
+                                <div class="user-activity-repost-card-body">
+                                    <div class="user-activity-post">
+                                      <div class="readable-content">
+                                          <div class="readable-content-collapse" style="">
+                                              <span>${render.targetContent ? render.targetContent : ''}</span>
+                                          </div>
+                                      </div>
+                                    </div>
+                                </div>
+                              </a>
+                          </div>`
         innerHTML = `<div class="comment-card is-flex">
                       <div class="comment-card-left">
                         <div class="user-avatar ">
@@ -160,10 +169,19 @@ function getNoti() {
                       </div>
                       <div class="comment-card-right">
                         <div class="comment-card-header">
-                          <span class="comment-card-header-screenname">有人关注你了嗷~</span>
+                          <span class="comment-card-header-screenname">${render.note}</span>
                         </div>
                         <div class="comment-card-main">
-                            ${usersHTML}
+                          <div class="comment-card-comment-section">
+                            <div class="comment-card-main-content">
+                                <div class="readable-content">
+                                  <div class="readable-content-collapse">
+                                  ${usersHTML}
+                                  </div>
+                                </div>
+                            </div>
+                          </div>
+                          ${referHTML}
                         </div>
                       </div>
                     </div>`;
@@ -171,10 +189,39 @@ function getNoti() {
       return innerHTML;
     });
     var noti = document.querySelector('div.duoie-noti');
-    noti.innerHTML = `<a class="comment-card-header-time" style="float: right; margin-right: .5em;" href="https://web.okjike.com/post-detail/5b14dd7c0801ae001741e264/originalPost">Ⓙ 此功能非官方哟，戳这里反馈你的想法 </a>
+    noti.innerHTML = `<a class="comment-card-header-time" style="float: right; margin-right: .5em;" href="/post-detail/5b5197a98608090017604f5c/originalPost">Ⓙ 此功能非官方哟，戳这里反馈你的想法 </a>
                       <div class="comments-timeline-container-title">近期的新通知</div>
                       <div>${filterData.join('')}</div>`;
   });
+}
+
+function getCamelName(str) {
+  return str.replace(/(\w+)_(\w)(\w+)/, function ($0, $1, $2, $3) {
+    return $1.toLowerCase() + $2 + $3.toLowerCase()
+  });
+}
+
+function getList(id) {
+  var token = localStorage.getItem('auth-token');
+  var req = {
+    "method": "POST",
+    "headers": {
+      "x-jike-app-auth-jwt": token,
+      "x-from": "duoie-love-jike",
+      "app-version": "4.7.0"
+    },
+    "body": {
+      "id": id
+    }
+  };
+  var profileUrl = document.querySelector('.user-nav ul.menu li.menu-item a').href;
+  fetch('https://app.jike.ruguoapp.com/1.0/originalPosts/listLikedUsers', req)
+  .then(function(res) {
+    return res.json();
+  })
+  .then(function(res) {
+
+  })
 }
 
 function init(params) {
@@ -186,9 +233,9 @@ function init(params) {
   getNoti();
 
   setTimeout(function() {
-    var btn = document.querySelector('.header-item.header-item-icon');
+    var btn = document.querySelector('.row.no-margin.end-xs.middle-xs.is-flex.middle-xs').children[2];
     btn.addEventListener('click', getNoti);
-  }, 3000);
+  }, 5000);
 }
 
 window.addEventListener("load", init);

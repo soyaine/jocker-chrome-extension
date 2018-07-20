@@ -4,7 +4,7 @@
 
 **[在 Chrome Store 下载](https://chrome.google.com/webstore/detail/love-jike-extension/pnglcgpgmedjmknpknjedmkggedgdlpk)**
 
-![example](https://github.com/Unknow-Y/tojike-chrome-extension/blob/master/dist/example-v2.0.1.png)
+![example](https://github.com/Unknow-Y/tojike-chrome-extension/blob/master/dist/example-v2.0.9.gif)
 
 ## 功能简介
 
@@ -44,6 +44,13 @@ crx 版本 | 2.0.8 | 可以在[ crx 文件夹](https://github.com/Unknow-Y/tojik
 3. 把 .crx 文件拖入
 
 ## 更新日志
+#### v2.0.9
+2018.07.20
+- 新增了点赞类型的通知
+- 优化了不同类型通知的处理逻辑和原动态链接的生成逻辑
+- 修复了点击通知按钮无法获取新通知的 bug
+- 修复非中文系统下的通知日期显示问题
+
 #### v2.0.8
 2018.07.06
 - 修复了获取不到通知的问题（因为 header 版本号过低）
