@@ -14,7 +14,6 @@ function getNoti() {
     return res.json();
   })
   .then(function(res) {
-    console.log(res.data)
     var filterData = res.data.filter(function(data) {
       if (data.linkUrl) {
         var url = new URL(data.linkUrl);
@@ -67,13 +66,6 @@ function getNoti() {
         data.renderType = 'users_like';
         data.render.note = `有 ${data.actionItem.usersCount} 个人给这条评论点赞喽~`;
         data.render.users = data.actionItem.users;
-        // if (!targetType && data.linkUrl) {
-        //   data.render.targetUrl = `/post-detail/${data.linkUrl.replace(/jike:\/\/page\.jk\/(\w+)\/(.+)/, "$2/$1")}`;
-        // } else {
-        //   data.render.targetUrl = `/post-detail/${targetId}/${getCamelName(targetType)}`;
-        // }
-        console.log(targetType)
-        console.log(data.linkUrl)
         if (targetType) {
           data.render.targetUrl = `/post-detail/${targetId}/${getCamelName(targetType)}`;
         } else if (data.linkUrl) {
@@ -90,11 +82,23 @@ function getNoti() {
           data.render.targetUrl = `/post-detail/${data.linkUrl.replace(/jike:\/\/page\.jk\/(\w+)\/(.+)/, "$2/$1")}`;
         }
         return true;
+      } else if (data.type === 'ANSWER_QUESTION') {
+        data.renderType = 'content';
+        data.render.targetUrl = '#';
+        data.render.note = '回答了你的问题（原问题页面在网页看不了哈';
+        data.render.nolink = true;
+        return true;
+      } else if (data.type === 'LIKE_QUESTION') {
+        data.renderType = 'users_like';
+        data.render.note = `有 ${data.actionItem.usersCount} 个人给你的提问点赞喽~`;
+        data.render.users = data.actionItem.users;
+        data.render.targetUrl = '#';
+        data.render.nolink = true;
+        return true;
       } else return false;
     }).map(function(data) {
       var render = data.render;
       var innerHTML = '';
-      console.log(render.targetUrl);
 
       if (data.renderType === 'content') {
         innerHTML = `<div class="comment-card is-flex">

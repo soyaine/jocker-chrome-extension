@@ -17,13 +17,14 @@
 - 在网页版查看通知详情，支持的通知类型如下：
   - [x] 评论和回复
   - [x] 关注
-  - [ ] 点赞
+  - [x] 点赞
+  - [x] 回答
 
 ## 下载地址
 
 版本 | 更新进度 | 下载
 ----|----|----
-Chrome Extension 版本 | 2.0.9 | [到 Chrome Store 下载](https://chrome.google.com/webstore/detail/love-jike-extension/pnglcgpgmedjmknpknjedmkggedgdlpk)
+Chrome Extension 版本 | 2.0.10 | [到 Chrome Store 下载](https://chrome.google.com/webstore/detail/love-jike-extension/pnglcgpgmedjmknpknjedmkggedgdlpk)
 UserScript 版本 | 2.0.1 | [在 OpenUserJS 下载](https://openuserjs.org/scripts/soyaine/Love_Jike)
 crx 版本 | 2.0.9 | 可以在[ crx 文件夹](https://github.com/Unknow-Y/tojike-chrome-extension/tree/master/crx) 找到
 
@@ -44,6 +45,11 @@ crx 版本 | 2.0.9 | 可以在[ crx 文件夹](https://github.com/Unknow-Y/tojik
 3. 把 .crx 文件拖入
 
 ## 更新日志
+#### v2.0.10
+2018.08.07
+- 新增对于问答类动态的回答和点赞通知
+- 清理了之前的坏代码
+
 #### v2.0.9
 2018.07.20
 - 新增了点赞类型的通知
