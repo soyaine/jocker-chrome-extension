@@ -24,9 +24,9 @@
 
 版本 | 更新进度 | 下载
 ----|----|----
-Chrome Extension 版本 | 2.0.10 | [到 Chrome Store 下载](https://chrome.google.com/webstore/detail/love-jike-extension/pnglcgpgmedjmknpknjedmkggedgdlpk)
+Chrome Extension 版本 | 2.0.111 | [到 Chrome Store 下载](https://chrome.google.com/webstore/detail/love-jike-extension/pnglcgpgmedjmknpknjedmkggedgdlpk)
 UserScript 版本 | 2.0.1 | [在 OpenUserJS 下载](https://openuserjs.org/scripts/soyaine/Love_Jike)
-crx 版本 | 2.0.9 | 可以在[ crx 文件夹](https://github.com/Unknow-Y/tojike-chrome-extension/tree/master/crx) 找到
+crx 版本 | 2.0.11 | 可以在[ crx 文件夹](https://github.com/Unknow-Y/tojike-chrome-extension/tree/master/crx) 找到
 
 ### Chrome Extension 版本
 [到 Chrome Store 下载](https://chrome.google.com/webstore/detail/love-jike-extension/pnglcgpgmedjmknpknjedmkggedgdlpk)
@@ -45,6 +45,10 @@ crx 版本 | 2.0.9 | 可以在[ crx 文件夹](https://github.com/Unknow-Y/tojik
 3. 把 .crx 文件拖入
 
 ## 更新日志
+#### v2.0.11
+2018.08.10
+- 增加支持对在官方消息下评论的点赞通知
+
 #### v2.0.10
 2018.08.07
 - 新增对于问答类动态的回答和点赞通知

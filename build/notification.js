@@ -15,11 +15,17 @@ function getNoti() {
   })
   .then(function(res) {
     var filterData = res.data.filter(function(data) {
+
       if (data.linkUrl) {
         var url = new URL(data.linkUrl);
-        var targetType = url.searchParams.get('targetType');
+        var targetType = url.searchParams.get('targetType'); // ORIGINAL_POST ORIGINAL_MESSAGE
         var targetId = url.searchParams.get('targetId');
       }
+
+      if (targetType) { // generate link url for act on comment type
+        var targetLinkStr = targetType.split('_')[1].toLowerCase() + '-detail';
+      }
+
       var action = data.actionItem;
 
       data.render = {
@@ -37,7 +43,7 @@ function getNoti() {
         var ifOriginal = targetType === 'ORIGINAL_POST' ? 'originalPost' : '';
         data.renderType = 'content';
         data.render.note = '回复了你';
-        data.render.targetUrl = `/post-detail/${targetId}/${ifOriginal}`;
+        data.render.targetUrl = `/${targetLinkStr}/${targetId}/${ifOriginal}`;
         return true;
       } else if (data.type === 'COMMENT_PERSONAL_UPDATE') {
         var ifOriginal = data.linkType === 'ORIGINAL_POST' ? 'originalPost' : '';
@@ -62,14 +68,14 @@ function getNoti() {
         data.render.note = '有人关注了你嗷~';
         data.render.users = data.actionItem.users;
         return true;
-      } else if (data.type === 'LIKE_PERSONAL_UPDATE_COMMENT') {
+      } else if (data.type === 'LIKE_PERSONAL_UPDATE_COMMENT' || data.type === 'LIKE_COMMENT') {
         data.renderType = 'users_like';
         data.render.note = `有 ${data.actionItem.usersCount} 个人给这条评论点赞喽~`;
         data.render.users = data.actionItem.users;
         if (targetType) {
-          data.render.targetUrl = `/post-detail/${targetId}/${getCamelName(targetType)}`;
+          data.render.targetUrl = `/${targetLinkStr}/${targetId}/${getCamelName(targetType)}`;
         } else if (data.linkUrl) {
-          data.render.targetUrl = `/post-detail/${data.linkUrl.replace(/jike:\/\/page\.jk\/(\w+)\/(.+)/, "$2/$1")}`;
+          data.render.targetUrl = `/${targetLinkStr}/${data.linkUrl.replace(/jike:\/\/page\.jk\/(\w+)\/(.+)/, "$2/$1")}`;
         }
         return true;
       } else if (data.type === 'LIKE_PERSONAL_UPDATE') {
@@ -77,9 +83,9 @@ function getNoti() {
         data.render.note = `有 ${data.actionItem.usersCount} 个人给这条动态点赞啦~`;
         data.render.users = data.actionItem.users;
         if (targetType) {
-          data.render.targetUrl = `/post-detail/${targetId}/${getCamelName(targetType)}`;
+          data.render.targetUrl = `/${targetLinkStr}/${targetId}/${getCamelName(targetType)}`;
         } else if (data.linkUrl) {
-          data.render.targetUrl = `/post-detail/${data.linkUrl.replace(/jike:\/\/page\.jk\/(\w+)\/(.+)/, "$2/$1")}`;
+          data.render.targetUrl = `/${targetLinkStr}/${data.linkUrl.replace(/jike:\/\/page\.jk\/(\w+)\/(.+)/, "$2/$1")}`;
         }
         return true;
       } else if (data.type === 'ANSWER_QUESTION') {
