@@ -22,10 +22,13 @@ function getNoti() {
         var targetId = url.searchParams.get('targetId');
       }
 
-      if (targetType) { // generate link url for act on comment type
-        var targetLinkStr = targetType.split('_')[1].toLowerCase() + '-detail';
+      if (targetType && targetType.split('_')[1]) { // generate link url for act on comment type
+        var targetLinkType =  targetType.split('_')[1].toLowerCase();
+      } else {
+        var targetLinkType = 'post' // default type
       }
 
+      var targetLinkStr = targetLinkType + '-detail';
       var action = data.actionItem;
 
       data.render = {
@@ -49,19 +52,19 @@ function getNoti() {
         var ifOriginal = data.linkType === 'ORIGINAL_POST' ? 'originalPost' : '';
         data.renderType = 'content';
         data.render.note = '评论了你的动态';
-        data.render.targetUrl = `/post-detail/${data.referenceItem.id}/${ifOriginal}`;
+        data.render.targetUrl = `/${targetLinkStr}/${data.referenceItem.id}/${ifOriginal}`;
         return true;
       } else if (data.type === 'REPLY_TO_COMMENT') {
         data.renderType = 'content';
         data.render.note = '回复了你';
-        data.render.targetUrl = `/message-detail/${targetId}/originalMessage`;
+        data.render.targetUrl = `/${targetLinkStr}/${targetId}/originalMessage`;
         return true;
       } else if (data.type === 'PERSONAL_UPDATE_REPOSTED') {
         data.renderType = 'content';
         data.render.note = '转发了你的动态';
         data.render.nolink = true;
         data.render.picture = false;
-        data.render.targetUrl = `/post-detail/${action.id}/repost`;
+        data.render.targetUrl = `/${targetLinkStr}/${action.id}/repost`;
         return true;
       } else if (data.type === 'USER_FOLLOWED') {
         data.renderType = 'users_follow';
