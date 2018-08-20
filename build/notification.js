@@ -1,17 +1,22 @@
 function getNoti() {
-  var token = localStorage.getItem('auth-token');
+  var token = localStorage.getItem('access-token');
   var req = {
     "method": "POST",
     "headers": {
-      "x-jike-app-auth-jwt": token,
+      "x-jike-access-token": token,
       "x-from": "duoie-love-jike",
-      "app-version": "4.7.0"
+      "app-version": "4.11.0",
+      "Content-Type": "application/json"
     }
   };
   var profileUrl = document.querySelector('.user-nav ul.menu li.menu-item a').href;
   fetch('https://app.jike.ruguoapp.com/1.0/notifications/list', req)
   .then(function(res) {
     return res.json();
+  })
+  .catch(function(err) {
+    console.error(err);
+    return {data: []};
   })
   .then(function(res) {
     var filterData = res.data.filter(function(data) {
