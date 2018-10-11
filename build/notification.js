@@ -207,7 +207,8 @@ function getNoti() {
       return innerHTML;
     });
     var noti = document.querySelector('div.duoie-noti');
-    noti.innerHTML = `<a class="comment-card-header-time" style="float: right; margin-right: .5em;" href="/post-detail/5b5197a98608090017604f5c/originalPost">Ⓙ 此功能非官方哟，戳这里反馈你的想法 </a>
+    noti.innerHTML = `<a class="comment-card-header-time" style="float: right; margin-right: .5em;" href="/post-detail/5b5197a98608090017604f5c/originalPost">
+                      Ⓙ 此功能非官方哟，戳这里反馈你的想法 </a>
                       <div class="comments-timeline-container-title">近期的新通知</div>
                       <div>${filterData.join('')}</div>`;
   });
@@ -242,6 +243,21 @@ function getList(id) {
   })
 }
 
+var openNoti = true;
+
+function toggleNoti() {
+  openNoti = !openNoti;
+
+  var notiBtn = document.getElementById('notiBtn');
+  var notiBtnClass = openNoti ? 'feed-link active' : 'feed-link';
+  notiBtn.setAttribute('class', notiBtnClass);
+
+  var notiDiv = document.getElementsByClassName('duoie-noti')[0];
+  var baseStyle = 'overflow-y: scroll; margin-bottom: 5px; background: #fff;'
+  var notiDivStyle = openNoti ? 'height: 40vh; ' + baseStyle : 'height: 0vh; ' + baseStyle;
+  notiDiv.setAttribute('style', notiDivStyle);
+}
+
 function init(params) {
   var insertBody = document.getElementsByClassName('row column')[1];
   var noti = document.createElement('div');
@@ -249,6 +265,13 @@ function init(params) {
   noti.setAttribute('style', 'height: 40vh; overflow-y: scroll; margin-bottom: 5px; background: #fff;');
   insertBody.appendChild(noti);
   getNoti();
+
+  var insertNotiButton = document.getElementsByClassName('feed-nav is-flex')[0];
+  var notiBtn = document.createElement('li');
+  notiBtn.setAttribute('class', 'feed-nav-item is-flex');
+  notiBtn.innerHTML = `<a class="feed-link active" id="notiBtn" href="#">通知</a>`;
+  insertNotiButton.appendChild(notiBtn);
+  notiBtn.addEventListener('click', toggleNoti)
 
   setTimeout(function() {
     var btn = document.querySelector('.row.no-margin.end-xs.middle-xs.is-flex.middle-xs').children[2];
