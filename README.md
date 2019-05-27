@@ -24,9 +24,9 @@
 
 版本 | 更新进度 | 下载
 ----|----|----
-Chrome Extension 版本 | 2.1.1 | [到 Chrome Store 下载](https://chrome.google.com/webstore/detail/love-jike-extension/pnglcgpgmedjmknpknjedmkggedgdlpk)
+Chrome Extension 版本 | 2.1.2 | [到 Chrome Store 下载](https://chrome.google.com/webstore/detail/love-jike-extension/pnglcgpgmedjmknpknjedmkggedgdlpk)
 UserScript 版本 | 2.0.1 | [在 OpenUserJS 下载](https://openuserjs.org/scripts/soyaine/Love_Jike)
-crx 版本 | 2.1.1 | 可以在[ crx 文件夹](https://github.com/Unknow-Y/tojike-chrome-extension/tree/master/crx) 找到
+crx 版本 | 2.1.2 | 可以在[ crx 文件夹](https://github.com/Unknow-Y/tojike-chrome-extension/tree/master/crx) 找到
 
 ### Chrome Extension 版本
 [到 Chrome Store 下载](https://chrome.google.com/webstore/detail/love-jike-extension/pnglcgpgmedjmknpknjedmkggedgdlpk)
@@ -45,6 +45,11 @@ crx 版本 | 2.1.1 | 可以在[ crx 文件夹](https://github.com/Unknow-Y/tojik
 3. 把 .crx 文件拖入
 
 ## 更新日志
+#### v2.1.2
+2019-05-27
+- 当没有新通知时，保持通知栏关闭
+- 修复因为 Chrome 安全限制导致的跨域请求问题
+
 #### v2.1.1
 2018-10-11
 - 支持关闭通知区域
