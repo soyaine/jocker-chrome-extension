@@ -1,25 +1,16 @@
+var OPEN_NOTI = true;
+
 function getNoti() {
   var token = localStorage.getItem('access-token');
-  var req = {
-    "method": "POST",
-    "headers": {
-      "x-jike-access-token": token,
-      "x-from": "duoie-love-jike",
-      "app-version": "4.11.0",
-      "Content-Type": "application/json"
-    }
-  };
   var profileUrl = document.querySelector('.user-nav ul.menu li.menu-item a').href;
-  fetch('https://app.jike.ruguoapp.com/1.0/notifications/list', req)
-  .then(function(res) {
-    return res.json();
-  })
-  .catch(function(err) {
-    console.error(err);
-    return {data: []};
-  })
-  .then(function(res) {
-    var filterData = res.data.filter(function(data) {
+
+  chrome.runtime.sendMessage({
+    contentScriptQuery: 'queryNotiList',
+    reqToken: token
+  }, function(res) {
+    var data = res.data
+
+    var filterData = data.filter(function(data) {
 
       if (data.linkUrl) {
         var url = new URL(data.linkUrl);
@@ -206,6 +197,7 @@ function getNoti() {
       }
       return innerHTML;
     });
+
     var noti = document.querySelector('div.duoie-noti');
     noti.innerHTML = `<a class="comment-card-header-time" style="float: right; margin-right: .5em;" href="/post-detail/5b5197a98608090017604f5c/originalPost">
                       Ⓙ 此功能非官方哟，戳这里反馈你的想法 </a>
@@ -220,41 +212,31 @@ function getCamelName(str) {
   });
 }
 
-function getList(id) {
-  var token = localStorage.getItem('auth-token');
-  var req = {
-    "method": "POST",
-    "headers": {
-      "x-jike-app-auth-jwt": token,
-      "x-from": "duoie-love-jike",
-      "app-version": "4.7.0"
-    },
-    "body": {
-      "id": id
-    }
-  };
-  var profileUrl = document.querySelector('.user-nav ul.menu li.menu-item a').href;
-  fetch('https://app.jike.ruguoapp.com/1.0/originalPosts/listLikedUsers', req)
-  .then(function(res) {
-    return res.json();
-  })
-  .then(function(res) {
-
-  })
+function getNotiCount() {
+  var token = localStorage.getItem('access-token');
+  chrome.runtime.sendMessage({
+    contentScriptQuery: 'queryNotiCount',
+    reqToken: token
+  }, function(res) {
+    OPEN_NOTI = Boolean(res.unreadCount !== 0)
+    checkNoti();
+  });
 }
 
-var openNoti = true;
-
 function toggleNoti() {
-  openNoti = !openNoti;
+  OPEN_NOTI = !OPEN_NOTI;
+  getNoti();
+  checkNoti();
+}
 
+function checkNoti() {
   var notiBtn = document.getElementById('notiBtn');
-  var notiBtnClass = openNoti ? 'feed-link active' : 'feed-link';
+  var notiBtnClass = OPEN_NOTI ? 'feed-link active' : 'feed-link';
   notiBtn.setAttribute('class', notiBtnClass);
 
   var notiDiv = document.getElementsByClassName('duoie-noti')[0];
   var baseStyle = 'overflow-y: scroll; margin-bottom: 5px; background: #fff;'
-  var notiDivStyle = openNoti ? 'height: 40vh; ' + baseStyle : 'height: 0vh; ' + baseStyle;
+  var notiDivStyle = OPEN_NOTI ? 'height: 40vh; ' + baseStyle : 'height: 0vh; ' + baseStyle;
   notiDiv.setAttribute('style', notiDivStyle);
 }
 
@@ -272,10 +254,11 @@ function init(params) {
   notiBtn.innerHTML = `<a class="feed-link active" id="notiBtn" href="#">通知</a>`;
   insertNotiButton.appendChild(notiBtn);
   notiBtn.addEventListener('click', toggleNoti)
+  getNotiCount();
 
   setTimeout(function() {
     var btn = document.querySelector('.row.no-margin.end-xs.middle-xs.is-flex.middle-xs').children[2];
-    btn.addEventListener('click', getNoti);
+    btn.addEventListener('click', function() {getNoti();getNotiCount();});
   }, 5000);
 }
 

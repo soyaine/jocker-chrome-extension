@@ -1,7 +1,7 @@
 {
   "name": "Love Jike Extension",
   "description" : "Better Jike Web",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "browser_action": {
     "default_icon": {
       "16": "icon16.png",
@@ -38,6 +38,7 @@
     }
   ],
   "permissions": [
-    "https://app.jike.ruguoapp.com/"
+    "*://*.ruguoapp.com/*",
+    "contextMenus"
   ]
 }
