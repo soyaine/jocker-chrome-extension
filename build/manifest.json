@@ -1,44 +1,35 @@
 {
-  "name": "Love Jike Extension",
-  "description" : "Better Jike Web",
-  "version": "2.1.2",
-  "browser_action": {
-    "default_icon": {
-      "16": "icon16.png",
-      "48": "icon48.png",
-      "128": "icon128.png"
-    },
-    "default_title": "Jike"
+  "name": "Jocker Extension",
+  "description": "Jike Web Tool",
+  "version": "3.0.0",
+  "manifest_version": 3,
+  "icons": {
+    "256": "icon256.png"
   },
-  "manifest_version": 2,
-  "commands": {
-    "_execute_browser_action": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+F",
-        "mac": "MacCtrl+Shift+F"
-      }
-    }
-  },
-  "icons": 
-  { 
-    "16": "icon16.png",             
-    "48": "icon48.png",            
-    "128": "icon128.png" 
-  },  
   "background": {
-    "scripts": ["background.js"],
-    "persistent": false
+    "service_worker": "background.js"
   },
-  "content_scripts": [
-    {
-      "matches": [
-        "https://web.okjike.com/feed/*", "https://web.ruguoapp.com/feed/*", "http://web.okjike.com/feed/*", "http://web.ruguoapp.com/feed/*"
-      ],
-      "js": ["notification.js"]
-    }
-  ],
+  "action": {
+    "default_icon": "icon256.png"
+  },
+  "content_scripts": [{
+    "matches": [
+      "https://web.okjike.com/me"
+    ],
+    "run_at": "document_end",
+    "js": ["me.js"],
+    "css": ["me.css"]
+  }],
   "permissions": [
-    "*://*.ruguoapp.com/*",
-    "contextMenus"
+    "tabs",
+    "storage"
+  ],
+  "web_accessible_resources": [{
+    "resources": ["icon256.png"],
+    "matches": ["https://web.okjike.com/me"]
+  }],
+  "host_permissions": [
+    "https://web.okjike.com/",
+    "https://web-api.okjike.com/"
   ]
 }
