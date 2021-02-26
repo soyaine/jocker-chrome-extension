@@ -10,6 +10,8 @@
     }
 
     .header {
+      position: fixed;
+      right: 0;
       top: 0;
       width: 100%;
       z-index: 10;
@@ -82,11 +84,15 @@
     }
 
     .posts {
-      position: absolute;
+      padding: 16px 14px;
       margin-left: 17em;
-      padding-right: 14px;
-      top: 56px;
+      margin-top: 56px;
       background-color: #fafafa;
+    }
+
+    .p-content {
+      color: #222;
+      line-height: 1.8em;
     }
 
     .p-date {
@@ -100,8 +106,8 @@
     }
 
     .post-default {
-      margin-top: 24px;
-      line-height: 1.5em;
+      margin: 24px auto;
+      max-width: 780px;
     }
 
     .posts-flow {
@@ -122,7 +128,7 @@
     }
 
     .posts-gallery {
-      width: 100%;
+      /* width: 100%; */
       padding-top: 50px;
       padding-bottom: 50px;
     }
