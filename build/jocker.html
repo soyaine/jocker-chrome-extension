@@ -37,6 +37,10 @@
       fill: rgb(164, 164, 164);
     }
 
+    .icon:hover {
+      fill: #656565;
+    }
+
     .layout-input {
       display: none;
     }
@@ -103,6 +107,7 @@
     .p-pic {
       width: 120px;
       margin-right: 1%;
+      margin-top: 1%;
     }
 
     .post-default {
@@ -159,6 +164,89 @@
       background-position: center;
       background-size: contain;
     }
+
+    #intro {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      text-align: center;
+      background-color: #fafafa;
+      z-index: 10;
+    }
+
+    #intro-jocker {
+      width: 50px;
+      filter: grayscale(1);
+    }
+
+    #intro-jocker.loading {
+      animation: hue 4s infinite;
+    }
+
+    @keyframes hue {
+
+      0%,
+      100% {
+        -webkit-filter: hue-rotate(0deg);
+      }
+
+      50% {
+        -webkit-filter: hue-rotate(180deg);
+      }
+    }
+
+    .intro-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .intro-desc {
+      font-size: 13px;
+      color: #444;
+      margin: 12px;
+      cursor: default;
+    }
+
+    .intro-start {
+      width: 7em;
+      padding: 5px 8px;
+      margin: 24px auto;
+      cursor: pointer;
+      background-color: #eee;
+      color: #222;
+    }
+
+    .intro-start:hover {
+      background-color: #ddd;
+    }
+
+    .intro-start.loading {
+      cursor: wait;
+      background-color: #ddd;
+    }
+    
+    #tool {
+      display: none;
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      cursor: pointer;
+    }
+
+    .posts-default + #tool,
+    .posts-flow + #tool,
+    .posts-gallery + #tool {
+      display: block;
+    }
+
+    .tool-tip {
+      font-size: 14px;
+      color: #5f6368;
+    }
   </style>
   <script src="jocker.js"></script>
 </head>
@@ -166,7 +254,6 @@
 <body>
   <div id="header" class="header">
     <img id="icon-jocker" src="icon256.png">
-    <span id="start">Start</span>
     <div id="layouts">
       <input class="layout-input active" type="radio" id="default" name="layout" value="default" checked="true">
       <label class="layout-label" for="default">
@@ -226,6 +313,25 @@
   <div id="topics" class="topics">
   </div>
   <div id="posts" class="posts">
+  </div>
+  <div id="tool">
+    <div class="tool-tip">
+      下载<span id="currentTopicName">这个</span>主题下所有动态的csv文件
+    </div>
+    <svg class="icon tool-icon" id="bold" enable-background="new 0 0 24 24" height="512" viewBox="0 0 24 24" width="512"
+      xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="m12 16c-.205 0-.401-.084-.542-.232l-5.25-5.5c-.455-.476-.117-1.268.542-1.268h2.75v-5.75c0-.689.561-1.25 1.25-1.25h2.5c.689 0 1.25.561 1.25 1.25v5.75h2.75c.659 0 .997.792.542 1.268l-5.25 5.5c-.141.148-.337.232-.542.232z" />
+      <path
+        d="m22.25 22h-20.5c-.965 0-1.75-.785-1.75-1.75v-.5c0-.965.785-1.75 1.75-1.75h20.5c.965 0 1.75.785 1.75 1.75v.5c0 .965-.785 1.75-1.75 1.75z" />
+      </svg>
+  </div>
+  <div id="intro">
+    <div class="intro-content">
+      <img id="intro-jocker" src="icon256.png">
+      <div class="intro-desc">即刻抽屉<br />换一种方式重温过去</div>
+      <div id="start" class="intro-start">开始整理</div>
+    </div>
   </div>
 </body>
 

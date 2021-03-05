@@ -16,7 +16,7 @@
     "matches": [
       "https://web.okjike.com/me"
     ],
-    "run_at": "document_end",
+    "run_at": "document_start",
     "js": ["me.js"],
     "css": ["me.css"]
   }],

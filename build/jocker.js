@@ -17,6 +17,7 @@ function JockerCache() {
   this.allNodes = [];
   this.allTopics = [];
   this.hasNextPage = false;
+  this.postFetching = false;
 
   this.currenLayoutMode = "default";
   this.currentFilterMode = "default";
@@ -31,6 +32,11 @@ function JockerCache() {
     this.allNodes = [];
     this.allTopics = [];
     this.hasNextPage = false;
+    this.postFetching = false;
+
+    this.currenLayoutMode = "default";
+    this.currentFilterMode = "default";
+    this.currentTopic = "";
   };
 
   this.addPosts = function (nodes) {
@@ -51,7 +57,7 @@ function JockerCache() {
       jocker._topic_map[topicName].nodes.push(node);
       jocker._topic_map[topicName].postLen++;
       if (hasPic(node)) {
-        jocker._topic_map[topicName].picPostLen++;
+        jocker._topic_map[topicName].picPostLen += node.pictures.length;
       }
     });
   };
@@ -289,6 +295,13 @@ function reloadTopics() {
   });
 }
 
+
+function stopLoading() {
+  jocker.postFetching = false
+
+  select('#intro').setAttribute('style', 'display: none;')
+}
+
 function changeLayout(e) {
   const mode = e.target.value;
   if (!mode || mode === jocker.currenLayoutMode) {
@@ -305,6 +318,37 @@ function changeLayout(e) {
 
   reloadTopics();
   loadPostsOfTopic(jocker.currentTopic);
+}
+
+function downloadCsv() {
+  if (jocker.currentTopic == '') {
+    return
+  }
+
+  const nodes = jocker.getPostsInTopic(jocker.currentTopic);
+  // let csvContent = "data:text/csv;charset=utf-8,";
+  let csvContent = ""
+  // csvContent += ['发布时间', '内容', '链接名称', '链接地址', '图片地址1', '图片地址2', '图片地址3', '图片地址4', '图片地址5', '图片地址6', '图片地址7', '图片地址8', '图片地址9'].join(",") + "\r\n"
+  csvContent += ['发布时间', '主题', '内容'].join(",") + "\r\n"
+
+  nodes.forEach(function(post) {
+      let row = [
+        `"${post.createdAt}"`,
+        `"${post.topic && post.topic.content || '无主题'}"`,
+        `"${post.content}"`
+        // `"${post.linkInfo && post.linkInfo.title || ''}"`,
+        // `"${post.linkInfo && post.linkInfo.linkUrl || ''}"`,
+        // post.pictures && (post.pictures.map(pic => { return `"${pic.picUrl}"` }).join(',') + '"",'.repeat(9 - post.pictures.length))
+      ].join(",");
+      csvContent += row + "\r\n";
+  });
+
+  var csvData = new Blob([csvContent], { type: 'text/csv' }); //new way
+  var encodedUri = URL.createObjectURL(csvData);
+
+
+  // var encodedUri = encodeURI(csvContent);
+  window.open(encodedUri);
 }
 
 let COOKIES = "";
@@ -672,16 +716,28 @@ function fetchPost(variables) {
         );
 
         if (jocker.hasNextPage) {
-          // if (jocker.hasNextPage && jocker.allNodes.length < 100) {
+        // if (jocker.hasNextPage && jocker.allNodes.length < 100) {
           fetchPost(jocker.getQueryVariables());
         } else {
           reloadTopics();
+          stopLoading();
         }
       }
     });
 }
 
-function startJocker() {
+function startJocker(e) {
+  if (jocker.postFetching) {
+    return
+  }
+
+  console.log('start', e)
+
+  jocker.postFetching = true
+  e.currentTarget.innerText = '正在整理中……'
+  e.currentTarget.classList.add('loading')
+  select('#intro-jocker').classList.add('loading')
+
   chrome.storage.local.get("firstPagePost", function (data) {
     console.log("jocker.js get chrome storage");
     let apollo = data.firstPagePost.props.pageProps.apolloState.data;
@@ -704,6 +760,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   select("#start").addEventListener("click", startJocker);
   select("#layouts").addEventListener("click", changeLayout);
+  select("#tool").addEventListener("click", downloadCsv);
 });
 
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
