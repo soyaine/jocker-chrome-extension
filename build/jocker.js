@@ -288,6 +288,7 @@ function reloadTopics() {
       }
       e.currentTarget.classList.add("active");
       jocker.currentTopic = topic_name;
+      select("#currentTopicName").innerText = topic_name;
       loadPostsOfTopic(topic_name);
     });
 
@@ -346,9 +347,14 @@ function downloadCsv() {
   var csvData = new Blob([csvContent], { type: 'text/csv' }); //new way
   var encodedUri = URL.createObjectURL(csvData);
 
-
-  // var encodedUri = encodeURI(csvContent);
-  window.open(encodedUri);
+  const a = document.createElement('a');
+  a.setAttribute('class', 'hidden-a');
+  document.body.appendChild(a);
+  a.href = encodedUri;
+  a.download = `${new Date().toLocaleDateString('sv-SE')}-${jocker.currentTopic}-jocker-backup.csv`
+  a.click();
+  window.URL.revokeObjectURL(encodedUri);
+  document.body.removeChild(a);
 }
 
 let COOKIES = "";

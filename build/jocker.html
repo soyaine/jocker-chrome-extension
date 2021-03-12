@@ -35,6 +35,8 @@
       width: 20px;
       height: 20px;
       fill: rgb(164, 164, 164);
+      vertical-align: middle;
+      cursor: pointer;
     }
 
     .icon:hover {
@@ -244,8 +246,31 @@
     }
 
     .tool-tip {
+      visibility: hidden;
       font-size: 14px;
       color: #5f6368;
+      display: inline-block;
+      vertical-align: middle;
+      background: #fefefe;
+      padding: 2px 4px;
+    }
+
+    #tool:hover .tool-tip {
+      animation: show-tip 0.3s forwards;
+    }
+
+    @keyframes show-tip {
+      100% {
+        visibility: visible;
+      }
+    }
+
+    #currentTopicName {
+      font-weight: bold;
+    }
+
+    .hidden-a {
+      visibility: hidden;
     }
   </style>
   <script src="jocker.js"></script>
@@ -316,7 +341,7 @@
   </div>
   <div id="tool">
     <div class="tool-tip">
-      下载<span id="currentTopicName">这个</span>主题下所有动态的csv文件
+      下载 <span id="currentTopicName">这个</span> 的csv文件
     </div>
     <svg class="icon tool-icon" id="bold" enable-background="new 0 0 24 24" height="512" viewBox="0 0 24 24" width="512"
       xmlns="http://www.w3.org/2000/svg">
