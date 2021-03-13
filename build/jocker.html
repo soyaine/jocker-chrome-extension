@@ -1,0 +1,366 @@
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <style>
+    body {
+      margin: 0;
+      font-size: 100%;
+      background-color: #fcfcfc;
+    }
+
+    .header {
+      position: fixed;
+      right: 0;
+      top: 0;
+      width: 100%;
+      z-index: 10;
+      padding: 16px;
+      text-align: right;
+      box-sizing: border-box;
+    }
+
+    #icon-jocker {
+      width: 28px;
+      float: left;
+    }
+
+    #layouts {
+      display: inline-block;
+      background-color: #fcfcfc;
+    }
+
+    .icon {
+      margin-left: 8px;
+      width: 20px;
+      height: 20px;
+      fill: rgb(164, 164, 164);
+      vertical-align: middle;
+      cursor: pointer;
+    }
+
+    .icon:hover {
+      fill: #656565;
+    }
+
+    .layout-input {
+      display: none;
+    }
+
+    .layout-input.active+.layout-label .icon {
+      fill: rgb(35, 35, 35);
+    }
+
+    .layout-label {
+      vertical-align: middle;
+      display: inline-block;
+    }
+
+    .topics {
+      width: 16em;
+      position: fixed;
+      top: 56px;
+      left: 8px;
+      bottom: 16px;
+      height: 100%;
+      overflow: scroll;
+      font-size: 0.9em;
+    }
+
+    .topic {
+      color: #5f6368;
+      padding: 6px 12px;
+      border-radius: 2px;
+      vertical-align: middle;
+    }
+
+    .topic:hover {
+      cursor: pointer;
+      background-color: #f5f5f5;
+    }
+
+    .topic.active {
+      background-color: #e2edff;
+    }
+
+    .tp-name {
+      margin-bottom: 1em;
+    }
+
+    .tp-count {
+      color: #777;
+      margin-left: 6px;
+      font-size: 0.8em;
+      float: right;
+    }
+
+    .posts {
+      padding: 16px 14px;
+      margin-left: 17em;
+      margin-top: 56px;
+      background-color: #fafafa;
+    }
+
+    .p-content {
+      color: #222;
+      line-height: 1.8em;
+    }
+
+    .p-date {
+      color: #777;
+      font-size: 0.8em;
+    }
+
+    .p-pic {
+      width: 120px;
+      margin-right: 1%;
+      margin-top: 1%;
+    }
+
+    .post-default {
+      margin: 24px auto;
+      max-width: 780px;
+    }
+
+    .posts-flow {
+      column-count: 4;
+      column-gap: 0;
+    }
+
+    .post-flow {
+      padding: 2px;
+      position: relative;
+      counter-increment: count;
+    }
+
+    .p-pic-flow {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .posts-gallery {
+      /* width: 100%; */
+      padding-top: 50px;
+      padding-bottom: 50px;
+    }
+
+    .gallery {
+      max-width: 955px;
+      margin: 0 auto;
+      display: grid;
+      grid-template: 1fr/repeat(3, 1fr);
+      column-gap: 30px;
+      row-gap: 30px;
+      z-index: 10;
+    }
+
+    .post-gallery {
+      padding: 10px;
+      box-sizing: border-box;
+      background-color: #fff;
+      position: relative;
+    }
+
+    .p-pic-gallery {
+      display: block;
+      width: 100%;
+      position: relative;
+      padding-bottom: 100%;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+    }
+
+    #intro {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      text-align: center;
+      background-color: #fafafa;
+      z-index: 10;
+    }
+
+    #intro-jocker {
+      width: 50px;
+      filter: grayscale(1);
+    }
+
+    #intro-jocker.loading {
+      animation: hue 4s infinite;
+    }
+
+    @keyframes hue {
+
+      0%,
+      100% {
+        -webkit-filter: hue-rotate(0deg);
+      }
+
+      50% {
+        -webkit-filter: hue-rotate(180deg);
+      }
+    }
+
+    .intro-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .intro-desc {
+      font-size: 13px;
+      color: #444;
+      margin: 12px;
+      cursor: default;
+    }
+
+    .intro-start {
+      width: 7em;
+      padding: 5px 8px;
+      margin: 24px auto;
+      cursor: pointer;
+      background-color: #eee;
+      color: #222;
+    }
+
+    .intro-start:hover {
+      background-color: #ddd;
+    }
+
+    .intro-start.loading {
+      cursor: wait;
+      background-color: #ddd;
+    }
+    
+    #tool {
+      display: none;
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      cursor: pointer;
+    }
+
+    .posts-default + #tool{
+      display: block;
+    }
+
+    .tool-tip {
+      visibility: hidden;
+      font-size: 14px;
+      color: #5f6368;
+      display: inline-block;
+      vertical-align: middle;
+      background: #fefefe;
+      padding: 2px 4px;
+    }
+
+    #tool:hover .tool-tip {
+      animation: show-tip 0.3s forwards;
+    }
+
+    @keyframes show-tip {
+      100% {
+        visibility: visible;
+      }
+    }
+
+    #currentTopicName {
+      font-weight: bold;
+    }
+
+    .hidden-a {
+      visibility: hidden;
+    }
+  </style>
+  <script src="jocker.js"></script>
+</head>
+
+<body>
+  <div id="header" class="header">
+    <img id="icon-jocker" src="icon256.png">
+    <div id="layouts">
+      <input class="layout-input active" type="radio" id="default" name="layout" value="default" checked="true">
+      <label class="layout-label" for="default">
+        <svg class="icon" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="35.668px" height="35.668px"
+          viewBox="0 0 35.668 35.668" style="enable-background:new 0 0 35.668 35.668;" xml:space="preserve">
+          <g>
+            <path
+              d="M33.168,5.667H2.5c-1.381,0-2.5-1.119-2.5-2.5s1.119-2.5,2.5-2.5h30.668c1.381,0,2.5,1.119,2.5,2.5
+  S34.549,5.667,33.168,5.667z M18.667,10.501c0-1.381-1.119-2.5-2.5-2.5H2.5c-1.381,0-2.5,1.119-2.5,2.5s1.119,2.5,2.5,2.5h13.667
+  C17.548,13.001,18.667,11.882,18.667,10.501z M35.668,17.833c0-1.381-1.119-2.5-2.5-2.5H2.5c-1.381,0-2.5,1.119-2.5,2.5
+  s1.119,2.5,2.5,2.5h30.668C34.549,20.333,35.668,19.214,35.668,17.833z M18.667,25.167c0-1.381-1.119-2.5-2.5-2.5H2.5
+  c-1.381,0-2.5,1.119-2.5,2.5s1.119,2.5,2.5,2.5h13.667C17.548,27.667,18.667,26.548,18.667,25.167z M35.668,32.501
+  c0-1.381-1.119-2.5-2.5-2.5H2.5c-1.381,0-2.5,1.119-2.5,2.5s1.119,2.5,2.5,2.5h30.668C34.549,35.001,35.668,33.882,35.668,32.501z" />
+          </g>
+        </svg>
+      </label>
+      <input class="layout-input" type="radio" id="flow" name="layout" value="flow">
+      <label class="layout-label" for="flow">
+        <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="512pt" version="1.1" viewBox="0 0 512.00002 512"
+          width="512pt">
+          <g id="surface1">
+            <path d="M 0 161 L 160.667969 161 L 160.667969 351 L 0 351 Z M 0 161" />
+            <path d="M 351.332031 0 L 512 0 L 512 351 L 351.332031 351 Z M 351.332031 0" />
+            <path d="M 190.667969 0 L 321.335938 0 L 321.335938 241 L 190.667969 241 Z M 190.667969 0" />
+            <path d="M 190.667969 271 L 321.335938 271 L 321.335938 512 L 190.667969 512 Z M 190.667969 271" />
+            <path d="M 0 0 L 160.667969 0 L 160.667969 131 L 0 131 Z M 0 0" />
+            <path d="M 351.332031 381 L 512 381 L 512 512 L 351.332031 512 Z M 351.332031 381" />
+            <path d="M 0 381 L 160.667969 381 L 160.667969 512 L 0 512 Z M 0 381" />
+          </g>
+        </svg>
+      </label>
+      <input class="layout-input" type="radio" id="gallery" name="layout" value="gallery">
+      <label class="layout-label" for="gallery">
+        <svg class="icon" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 341.333 341.333"
+          style="enable-background:new 0 0 341.333 341.333;" xml:space="preserve">
+          <g>
+            <g>
+              <g>
+                <rect x="128" y="128" width="85.333" height="85.333" />
+                <rect x="0" y="0" width="85.333" height="85.333" />
+                <rect x="128" y="256" width="85.333" height="85.333" />
+                <rect x="0" y="128" width="85.333" height="85.333" />
+                <rect x="0" y="256" width="85.333" height="85.333" />
+                <rect x="256" y="0" width="85.333" height="85.333" />
+                <rect x="128" y="0" width="85.333" height="85.333" />
+                <rect x="256" y="128" width="85.333" height="85.333" />
+                <rect x="256" y="256" width="85.333" height="85.333" />
+              </g>
+            </g>
+          </g>
+        </svg>
+      </label>
+    </div>
+  </div>
+  <div id="topics" class="topics">
+  </div>
+  <div id="posts" class="posts">
+  </div>
+  <div id="tool">
+    <div class="tool-tip">
+      下载 <span id="currentTopicName">这个</span> 的csv文件
+    </div>
+    <svg class="icon tool-icon" id="bold" enable-background="new 0 0 24 24" height="512" viewBox="0 0 24 24" width="512"
+      xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="m12 16c-.205 0-.401-.084-.542-.232l-5.25-5.5c-.455-.476-.117-1.268.542-1.268h2.75v-5.75c0-.689.561-1.25 1.25-1.25h2.5c.689 0 1.25.561 1.25 1.25v5.75h2.75c.659 0 .997.792.542 1.268l-5.25 5.5c-.141.148-.337.232-.542.232z" />
+      <path
+        d="m22.25 22h-20.5c-.965 0-1.75-.785-1.75-1.75v-.5c0-.965.785-1.75 1.75-1.75h20.5c.965 0 1.75.785 1.75 1.75v.5c0 .965-.785 1.75-1.75 1.75z" />
+      </svg>
+  </div>
+  <div id="intro">
+    <div class="intro-content">
+      <img id="intro-jocker" src="icon256.png">
+      <div class="intro-desc">即刻抽屉<br />换一种方式重温过去</div>
+      <div id="start" class="intro-start">开始整理</div>
+    </div>
+  </div>
+</body>
+
+</html>
