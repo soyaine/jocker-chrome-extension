@@ -1,1 +1,1 @@
-Sitemap: /sitemap.xml
+Sitemap: https://soyaine.github.io/jocker-chrome-extension/sitemap.xml
