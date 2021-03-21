@@ -1,11 +1,16 @@
 // Copyright (c) 2021 Soyaine. All rights reserved.
 
-// Shorthand for document.querySelector.
 function select(selector) {
   return document.querySelector(selector);
 }
 function hasPic(node) {
   return node.pictures && node.pictures.length > 0
+}
+function snackToCamel (str) {
+  if (!str) {
+    return ""
+  }
+  return str.toLowerCase().replace(/([-_]\w)/g, g => g[1].toUpperCase())
 }
 
 function JockerCache() {
@@ -23,6 +28,11 @@ function JockerCache() {
   this.currentFilterMode = "default";
   this.currentTopic = "";
 
+  this.now = new Date();
+  this.nowYear = this.now.getFullYear();
+  this.nowMonth = this.now.getMonth();
+  this.nowDate = this.now.getDate();
+
   this.reset = function () {
     this._post_map = {};
     this._topic_map = {};
@@ -39,37 +49,47 @@ function JockerCache() {
     this.currentTopic = "";
   };
 
+  this.addPostToTopic = function (node, topicName) {
+    var jocker = this;
+    if (!jocker._topic_map[topicName]) {
+      jocker._topic_map[topicName] = {
+        postLen: 0,
+        picPostLen: 0,
+        nodes: [],
+      };
+      jocker.allTopics.push(topicName);
+    }
+    jocker._topic_map[topicName].nodes.push(node);
+    jocker._topic_map[topicName].postLen++;
+    if (hasPic(node)) {
+      jocker._topic_map[topicName].picPostLen += node.pictures.length;
+    }
+  }
+
   this.addPosts = function (nodes) {
     // console.log(nodes);
     var jocker = this;
     nodes.forEach(function (node) {
       jocker.allNodes.push(node);
+
       let topicName = node["topic"] ? node["topic"]["content"] : "无";
       let topicId = node["topic"] ? node["topic"]["id"] : "no";
-      if (!jocker._topic_map[topicName]) {
-        jocker._topic_map[topicName] = {
-          postLen: 0,
-          picPostLen: 0,
-          nodes: [],
-        };
-        jocker.allTopics.push(topicName);
-      }
-      jocker._topic_map[topicName].nodes.push(node);
-      jocker._topic_map[topicName].postLen++;
-      if (hasPic(node)) {
-        jocker._topic_map[topicName].picPostLen += node.pictures.length;
+      jocker.addPostToTopic(node, topicName);
+
+      if (node.createdAt) {
+        const create = new Date(node.createdAt);
+        if (create.getFullYear() !== jocker.nowYear
+          && create.getMonth() === jocker.nowMonth
+          && create.getDate() == jocker.nowDate) {
+          jocker.addPostToTopic(node, "往年今日🌒");
+        }
       }
     });
   };
 
   this.addApolloData = function (apollo) {
-    // console.log(apollo);
+    // console.log("apollo", apollo);
     this._user_id = apollo["$ROOT_QUERY.profile"]["username"];
-    const pageInfo = apollo[`$User:${this._user_id}.feeds({}).pageInfo`];
-    this.updatePageInfo(
-      pageInfo["hasNextPage"],
-      pageInfo["loadMoreKey"]["json"]["lastId"]
-    );
     let nodes = apollo[`$User:${this._user_id}.feeds({})`]["nodes"];
 
     nodes = nodes.map(function (node) {
@@ -85,9 +105,29 @@ function JockerCache() {
           return apollo[pic["id"]];
         });
       }
+      if (post["video"]) {
+        const pid = post["id"];
+        const ptype = post["type"];
+        const query = `$ROOT_QUERY.mediaMetaPlay({"messageId":"${pid}","messageType":"${ptype}"})`
+        post["video"] = apollo[query]["url"]
+      }
+      if (post["target"]) {
+        const targetPost = apollo[post["target"]["id"]]
+        if (targetPost["user"] && targetPost["user"]["id"]) {
+          targetPost["user"] = apollo[targetPost["user"]["id"]]
+        }
+        post["target"] = targetPost
+      }
+
       return post;
     });
     this.addPosts(nodes);
+
+    const pageInfo = apollo[`$User:${this._user_id}.feeds({}).pageInfo`];
+    const lastId = pageInfo["loadMoreKey"] && pageInfo["loadMoreKey"]["json"] && pageInfo["loadMoreKey"]["json"]["lastId"] || ''
+
+    console.log("pageInfo", pageInfo);
+    this.updatePageInfo(pageInfo["hasNextPage"], lastId);
   };
 
   this.updatePageInfo = function (hasNext, lastId) {
@@ -189,6 +229,27 @@ function loadPostsDefault(postsElem, nodes) {
 
       postElem.appendChild(pics);
     }
+
+    if (post.video) {
+      var videoElem = document.createElement("video");
+      videoElem.setAttribute("controls", "controls");
+      videoElem.setAttribute("class", "p-video");
+      videoElem.setAttribute("src", post.video);
+      postElem.appendChild(videoElem);
+    }
+
+    if (post.target) {
+      const target = post.target;
+      var tragetElem = document.createElement("a");
+      tragetElem.setAttribute("target", "_blank");
+      tragetElem.setAttribute("href", `https://web.okjike.com/${snackToCamel(post.targetType)}/${target.id}`);
+      tragetElem.innerHTML = `
+        ${target.user && target.user.screenName}: ${target.content}
+      `
+      tragetElem.setAttribute("class", "p-target");
+      postElem.appendChild(tragetElem);
+    }
+
     postsElem.appendChild(postElem);
   });
 }
@@ -327,8 +388,7 @@ function downloadCsv() {
   }
 
   const nodes = jocker.getPostsInTopic(jocker.currentTopic);
-  // let csvContent = "data:text/csv;charset=utf-8,";
-  let csvContent = ""
+  let csvContent = "\uFEFF"
   // csvContent += ['发布时间', '内容', '链接名称', '链接地址', '图片地址1', '图片地址2', '图片地址3', '图片地址4', '图片地址5', '图片地址6', '图片地址7', '图片地址8', '图片地址9'].join(",") + "\r\n"
   csvContent += ['发布时间', '主题', '内容'].join(",") + "\r\n"
 
@@ -344,7 +404,7 @@ function downloadCsv() {
       csvContent += row + "\r\n";
   });
 
-  var csvData = new Blob([csvContent], { type: 'text/csv' }); //new way
+  var csvData = new Blob([csvContent], { type: 'text/csv;charset=utf-8' }); //new way
   var encodedUri = URL.createObjectURL(csvData);
 
   const a = document.createElement('a');
@@ -715,6 +775,8 @@ function fetchPost(variables) {
       // console.log(feeds);
       if (feeds && feeds.nodes) {
         jocker.addPosts(feeds.nodes);
+        select("#start").innerText = `已整理 ${jocker.allNodes.length} 条...`
+        // console.log('fetch success got data', feeds.nodes.length)
         const pageInfo = feeds.pageInfo;
         jocker.updatePageInfo(
           pageInfo.hasNextPage,
@@ -729,6 +791,10 @@ function fetchPost(variables) {
           stopLoading();
         }
       }
+    })
+    .catch((err) => {
+      select("#start").innerText = "出错啦"
+      console.error(err);
     });
 }
 
@@ -740,7 +806,7 @@ function startJocker(e) {
   console.log('start', e)
 
   jocker.postFetching = true
-  e.currentTarget.innerText = '正在整理中……'
+  e.currentTarget.innerText = '整理中……'
   e.currentTarget.classList.add('loading')
   select('#intro-jocker').classList.add('loading')
 
@@ -748,7 +814,12 @@ function startJocker(e) {
     console.log("jocker.js get chrome storage");
     let apollo = data.firstPagePost.props.pageProps.apolloState.data;
     jocker.addApolloData(apollo);
-    fetchPost(jocker.getQueryVariables());
+    if (jocker.hasNextPage) {
+      fetchPost(jocker.getQueryVariables());
+    } else {
+      stopLoading();
+      reloadTopics();
+    }
   });
 }
 

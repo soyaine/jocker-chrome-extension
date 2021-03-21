@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2021-03-21T14:48:03+00:00</updated><id>/feed.xml</id><title type="html">Jocker</title><subtitle>即刻抽屉</subtitle><entry><title type="html">即刻抽屉，换一种方式重温动态</title><link href="/jocker-release/" rel="alternate" type="text/html" title="即刻抽屉，换一种方式重温动态" /><published>2021-03-21T00:00:00+00:00</published><updated>2021-03-21T00:00:00+00:00</updated><id>/jocker-release</id><content type="html" xml:base="/jocker-release/">&lt;p&gt;即刻抽屉是一个可以按主题查看和备份自己即刻动态的工具，让你换一种方式来回顾自己的动态。&lt;/p&gt;
+
+&lt;h2 id=&quot;安装&quot;&gt;安装&lt;/h2&gt;
+&lt;p&gt;Jocker 是一款 Chrome 插件，基于 Manifest V3 标准进行开发，请使用 Chromium 内核的浏览器，并更新到最新版本。&lt;/p&gt;
+
+&lt;p&gt;你可以使用下面两种方式安装此插件。&lt;/p&gt;
+
+&lt;h3 id=&quot;chrome-网上应用店&quot;&gt;chrome 网上应用店&lt;/h3&gt;
+
+&lt;p&gt;如果你可以访问 chrome 网上应用店，请到地址 &lt;a href=&quot;https://chrome.google.com/webstore/detail/pnglcgpgmedjmknpknjedmkggedgdlpk&quot;&gt;https://chrome.google.com/webstore/detail/pnglcgpgmedjmknpknjedmkggedgdlpk&lt;/a&gt; 安装。&lt;/p&gt;
+
+&lt;p&gt;如果你无法访问，可以选择下载安装包安装。&lt;/p&gt;
+
+&lt;h3 id=&quot;crx-安装包&quot;&gt;crx 安装包&lt;/h3&gt;
+&lt;ol&gt;
+  &lt;li&gt;打开地址 &lt;a href=&quot;https://github.com/soyaine/jocker-chrome-extension/releases/latest&quot;&gt;https://github.com/soyaine/jocker-chrome-extension/releases/latest&lt;/a&gt; ，点击 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Assets&lt;/code&gt; 展开列表后可以看到一个后缀为 .crx 的文件，点击它下载，浏览器可能会询问是否继续，点击 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;继续&lt;/code&gt;。&lt;/li&gt;
+  &lt;li&gt;在浏览器地址栏输入 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;chrome://extensions&lt;/code&gt; 打开扩展程序管理页面。&lt;/li&gt;
+  &lt;li&gt;点击打开该页面右上角的 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;开发者模式&lt;/code&gt;。&lt;/li&gt;
+  &lt;li&gt;将下载的 crx 文件拖动到这个页面，页面弹出确认框问，要添加“Jocker Extension”吗？点击 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;添加扩展程序&lt;/code&gt;。&lt;/li&gt;
+  &lt;li&gt;添加成功后，页面中会出现一个 Jocker Extension 卡片，请确认卡片右下角的开关为打开状态。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;使用说明&quot;&gt;使用说明&lt;/h2&gt;
+&lt;ol&gt;
+  &lt;li&gt;安装成功后，打开即刻网页版的个人页面 https://web.okjike.com/me ，如果你没有登录，请登录后再打开这个页面，请注意需要打开的是个人页面，而不是首页。&lt;/li&gt;
+  &lt;li&gt;等待片刻后，页面右下角会出现即刻抽屉的图标，点击它，就可以打开即刻抽屉页面了。&lt;/li&gt;
+  &lt;li&gt;点击 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;开始整理&lt;/code&gt;，等待拉取动态数据。由于此工具没有把你的动态数据存到本地，所以每次重新打开即刻抽屉页面，都需要重新取一次数据。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;在即刻抽屉页面，你可以做的事情：&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;点击左侧的主题名字，可以查看每个主题下的对应动态。&lt;/li&gt;
+  &lt;li&gt;点击右上角的按钮，可以切换当前的查看模式，当切换到图片模式的时候，左侧的主题排序和数量会基于图片的数量进行重新排序。&lt;/li&gt;
+  &lt;li&gt;在图文模式下，点击右下角的下载按钮，可以下载当前主题下的动态数据，下载后，csv文件可以导入Notion或者用Excel、文本编辑器查看。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;更新日志&quot;&gt;更新日志&lt;/h2&gt;
+&lt;h4 id=&quot;v300&quot;&gt;v3.0.0&lt;/h4&gt;
+&lt;p&gt;2021.03.21 支持的功能：&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;按主题查看自己的动态&lt;/li&gt;
+  &lt;li&gt;按主题导出自己的文字动态，以csv文件格式&lt;/li&gt;
+  &lt;li&gt;按主题查看自己发过的图片&lt;/li&gt;
+  &lt;li&gt;查看自己往年今日的动态&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;其他&quot;&gt;其他&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;如果有什么问题或建议，可以到&lt;a href=&quot;https://t.me/joinchat/eV5l2_DxlHI0NWNl&quot;&gt;Telegram讨论组&lt;/a&gt;反馈&lt;/li&gt;
+  &lt;li&gt;如果喜欢这个工具，欢迎&lt;a href=&quot;http://afdian.net/@soyaine&quot;&gt;赞助开发者&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name></name></author><category term="release" /><category term="jocker" /><summary type="html">即刻抽屉是一个可以按主题查看和备份自己即刻动态的工具，让你换一种方式来回顾自己的动态。</summary></entry></feed>
