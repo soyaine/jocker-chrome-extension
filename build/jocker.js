@@ -63,13 +63,8 @@ function JockerCache() {
   };
 
   this.addApolloData = function (apollo) {
-    // console.log(apollo);
+    // console.log("apollo", apollo);
     this._user_id = apollo["$ROOT_QUERY.profile"]["username"];
-    const pageInfo = apollo[`$User:${this._user_id}.feeds({}).pageInfo`];
-    this.updatePageInfo(
-      pageInfo["hasNextPage"],
-      pageInfo["loadMoreKey"]["json"]["lastId"]
-    );
     let nodes = apollo[`$User:${this._user_id}.feeds({})`]["nodes"];
 
     nodes = nodes.map(function (node) {
@@ -88,6 +83,12 @@ function JockerCache() {
       return post;
     });
     this.addPosts(nodes);
+
+    const pageInfo = apollo[`$User:${this._user_id}.feeds({}).pageInfo`];
+    const lastId = pageInfo["loadMoreKey"] && pageInfo["loadMoreKey"]["json"] && pageInfo["loadMoreKey"]["json"]["lastId"] || ''
+
+    console.log("pageInfo", pageInfo);
+    this.updatePageInfo(pageInfo["hasNextPage"], lastId);
   };
 
   this.updatePageInfo = function (hasNext, lastId) {
@@ -328,7 +329,7 @@ function downloadCsv() {
 
   const nodes = jocker.getPostsInTopic(jocker.currentTopic);
   // let csvContent = "data:text/csv;charset=utf-8,";
-  let csvContent = ""
+  let csvContent = "\uFEFF"
   // csvContent += ['发布时间', '内容', '链接名称', '链接地址', '图片地址1', '图片地址2', '图片地址3', '图片地址4', '图片地址5', '图片地址6', '图片地址7', '图片地址8', '图片地址9'].join(",") + "\r\n"
   csvContent += ['发布时间', '主题', '内容'].join(",") + "\r\n"
 
@@ -344,7 +345,7 @@ function downloadCsv() {
       csvContent += row + "\r\n";
   });
 
-  var csvData = new Blob([csvContent], { type: 'text/csv' }); //new way
+  var csvData = new Blob([csvContent], { type: 'text/csv;charset=utf-8' }); //new way
   var encodedUri = URL.createObjectURL(csvData);
 
   const a = document.createElement('a');
@@ -715,6 +716,8 @@ function fetchPost(variables) {
       // console.log(feeds);
       if (feeds && feeds.nodes) {
         jocker.addPosts(feeds.nodes);
+        select("#start").innerText = `已整理${jocker.allNodes.length}条...`
+        // console.log('fetch success got data', feeds.nodes.length)
         const pageInfo = feeds.pageInfo;
         jocker.updatePageInfo(
           pageInfo.hasNextPage,
@@ -729,6 +732,10 @@ function fetchPost(variables) {
           stopLoading();
         }
       }
+    })
+    .catch((err) => {
+      select("#start").innerText = "出错啦"
+      console.error(err);
     });
 }
 
@@ -740,7 +747,7 @@ function startJocker(e) {
   console.log('start', e)
 
   jocker.postFetching = true
-  e.currentTarget.innerText = '正在整理中……'
+  e.currentTarget.innerText = '整理中……'
   e.currentTarget.classList.add('loading')
   select('#intro-jocker').classList.add('loading')
 
@@ -748,7 +755,12 @@ function startJocker(e) {
     console.log("jocker.js get chrome storage");
     let apollo = data.firstPagePost.props.pageProps.apolloState.data;
     jocker.addApolloData(apollo);
-    fetchPost(jocker.getQueryVariables());
+    if (jocker.hasNextPage) {
+      fetchPost(jocker.getQueryVariables());
+    } else {
+      stopLoading();
+      reloadTopics();
+    }
   });
 }
 
