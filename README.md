@@ -5,18 +5,20 @@
 ## 安装
 Jocker 是一款 Chrome 插件，基于 Manifest V3 标准进行开发，请使用 Chromium 内核的浏览器，并更新到最新版本。
 
+你可以使用下面两种方式安装此插件。
+
 ### chrome 网上应用店
 
-如果你可以访问 chrome 网上应用店，请到地址 [https://chrome.google.com/webstore/detail/love-jike-extension/pnglcgpgmedjmknpknjedmkggedgdlpk](https://chrome.google.com/webstore/detail/jocker/pnglcgpgmedjmknpknjedmkggedgdlpk) 安装。
+如果你可以访问 chrome 网上应用店，请到地址 [https://chrome.google.com/webstore/detail/pnglcgpgmedjmknpknjedmkggedgdlpk](https://chrome.google.com/webstore/detail/pnglcgpgmedjmknpknjedmkggedgdlpk) 安装。
 
 如果你无法访问，可以选择下载安装包安装。
 
 ### crx 安装包
-1. 打开地址 https://github.com/soyaine/jocker-chrome-extension/releases/latest ，点击 `Assets` 展开列表后可以看到一个后缀为 .crx 的文件，点击它下载，浏览器可能会询问是否继续，点击 `继续`
-1. 在浏览器地址栏输入 `chrome://extensions` 打开扩展程序管理页面
-2. 点击打开该页面右上角的 `开发者模式`
-3. 将下载的 crx 文件拖动到这个页面，页面弹出确认框问，要添加“Jocker Extension”吗？点击 `添加扩展程序`
-4. 添加成功后，页面中会出现一个 Jocker Extension 卡片，请确认卡片右下角的开关为打开状态
+1. 打开地址 [https://github.com/soyaine/jocker-chrome-extension/releases/latest](https://github.com/soyaine/jocker-chrome-extension/releases/latest) ，点击 `Assets` 展开列表后可以看到一个后缀为 .crx 的文件，点击它下载，浏览器可能会询问是否继续，点击 `继续`。
+1. 在浏览器地址栏输入 `chrome://extensions` 打开扩展程序管理页面。
+2. 点击打开该页面右上角的 `开发者模式`。
+3. 将下载的 crx 文件拖动到这个页面，页面弹出确认框问，要添加“Jocker Extension”吗？点击 `添加扩展程序`。
+4. 添加成功后，页面中会出现一个 Jocker Extension 卡片，请确认卡片右下角的开关为打开状态。
 
 ## 使用说明
 1. 安装成功后，打开即刻网页版的个人页面 https://web.okjike.com/me ，如果你没有登录，请登录后再打开这个页面，请注意需要打开的是个人页面，而不是首页。
