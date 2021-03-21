@@ -1,6 +1,5 @@
 // Copyright (c) 2021 Soyaine. All rights reserved.
 
-// Shorthand for document.querySelector.
 function select(selector) {
   return document.querySelector(selector);
 }
@@ -29,7 +28,7 @@ function JockerCache() {
   this.currentFilterMode = "default";
   this.currentTopic = "";
 
-  this.now = new Date('2021-03-14');
+  this.now = new Date();
   this.nowYear = this.now.getFullYear();
   this.nowMonth = this.now.getMonth();
   this.nowDate = this.now.getDate();
@@ -82,7 +81,7 @@ function JockerCache() {
         if (create.getFullYear() !== jocker.nowYear
           && create.getMonth() === jocker.nowMonth
           && create.getDate() == jocker.nowDate) {
-          jocker.addPostToTopic(node, "往年今日");
+          jocker.addPostToTopic(node, "往年今日🌒");
         }
       }
     });
@@ -106,7 +105,6 @@ function JockerCache() {
           return apollo[pic["id"]];
         });
       }
-      console.log(post)
       if (post["video"]) {
         const pid = post["id"];
         const ptype = post["type"];
@@ -234,6 +232,7 @@ function loadPostsDefault(postsElem, nodes) {
 
     if (post.video) {
       var videoElem = document.createElement("video");
+      videoElem.setAttribute("controls", "controls");
       videoElem.setAttribute("class", "p-video");
       videoElem.setAttribute("src", post.video);
       postElem.appendChild(videoElem);
