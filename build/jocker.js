@@ -29,6 +29,11 @@ function JockerCache() {
   this.currentFilterMode = "default";
   this.currentTopic = "";
 
+  this.now = new Date('2021-03-14');
+  this.nowYear = this.now.getFullYear();
+  this.nowMonth = this.now.getMonth();
+  this.nowDate = this.now.getDate();
+
   this.reset = function () {
     this._post_map = {};
     this._topic_map = {};
@@ -45,25 +50,40 @@ function JockerCache() {
     this.currentTopic = "";
   };
 
+  this.addPostToTopic = function (node, topicName) {
+    var jocker = this;
+    if (!jocker._topic_map[topicName]) {
+      jocker._topic_map[topicName] = {
+        postLen: 0,
+        picPostLen: 0,
+        nodes: [],
+      };
+      jocker.allTopics.push(topicName);
+    }
+    jocker._topic_map[topicName].nodes.push(node);
+    jocker._topic_map[topicName].postLen++;
+    if (hasPic(node)) {
+      jocker._topic_map[topicName].picPostLen += node.pictures.length;
+    }
+  }
+
   this.addPosts = function (nodes) {
     // console.log(nodes);
     var jocker = this;
     nodes.forEach(function (node) {
       jocker.allNodes.push(node);
+
       let topicName = node["topic"] ? node["topic"]["content"] : "无";
       let topicId = node["topic"] ? node["topic"]["id"] : "no";
-      if (!jocker._topic_map[topicName]) {
-        jocker._topic_map[topicName] = {
-          postLen: 0,
-          picPostLen: 0,
-          nodes: [],
-        };
-        jocker.allTopics.push(topicName);
-      }
-      jocker._topic_map[topicName].nodes.push(node);
-      jocker._topic_map[topicName].postLen++;
-      if (hasPic(node)) {
-        jocker._topic_map[topicName].picPostLen += node.pictures.length;
+      jocker.addPostToTopic(node, topicName);
+
+      if (node.createdAt) {
+        const create = new Date(node.createdAt);
+        if (create.getFullYear() !== jocker.nowYear
+          && create.getMonth() === jocker.nowMonth
+          && create.getDate() == jocker.nowDate) {
+          jocker.addPostToTopic(node, "往年今日");
+        }
       }
     });
   };
