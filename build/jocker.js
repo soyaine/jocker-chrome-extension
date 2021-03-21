@@ -7,6 +7,12 @@ function select(selector) {
 function hasPic(node) {
   return node.pictures && node.pictures.length > 0
 }
+function snackToCamel (str) {
+  if (!str) {
+    return ""
+  }
+  return str.toLowerCase().replace(/([-_]\w)/g, g => g[1].toUpperCase())
+}
 
 function JockerCache() {
   this._post_map = {};
@@ -80,6 +86,21 @@ function JockerCache() {
           return apollo[pic["id"]];
         });
       }
+      console.log(post)
+      if (post["video"]) {
+        const pid = post["id"];
+        const ptype = post["type"];
+        const query = `$ROOT_QUERY.mediaMetaPlay({"messageId":"${pid}","messageType":"${ptype}"})`
+        post["video"] = apollo[query]["url"]
+      }
+      if (post["target"]) {
+        const targetPost = apollo[post["target"]["id"]]
+        if (targetPost["user"] && targetPost["user"]["id"]) {
+          targetPost["user"] = apollo[targetPost["user"]["id"]]
+        }
+        post["target"] = targetPost
+      }
+
       return post;
     });
     this.addPosts(nodes);
@@ -190,6 +211,26 @@ function loadPostsDefault(postsElem, nodes) {
 
       postElem.appendChild(pics);
     }
+
+    if (post.video) {
+      var videoElem = document.createElement("video");
+      videoElem.setAttribute("class", "p-video");
+      videoElem.setAttribute("src", post.video);
+      postElem.appendChild(videoElem);
+    }
+
+    if (post.target) {
+      const target = post.target;
+      var tragetElem = document.createElement("a");
+      tragetElem.setAttribute("target", "_blank");
+      tragetElem.setAttribute("href", `https://web.okjike.com/${snackToCamel(post.targetType)}/${target.id}`);
+      tragetElem.innerHTML = `
+        ${target.user && target.user.screenName}: ${target.content}
+      `
+      tragetElem.setAttribute("class", "p-target");
+      postElem.appendChild(tragetElem);
+    }
+
     postsElem.appendChild(postElem);
   });
 }
@@ -328,7 +369,6 @@ function downloadCsv() {
   }
 
   const nodes = jocker.getPostsInTopic(jocker.currentTopic);
-  // let csvContent = "data:text/csv;charset=utf-8,";
   let csvContent = "\uFEFF"
   // csvContent += ['发布时间', '内容', '链接名称', '链接地址', '图片地址1', '图片地址2', '图片地址3', '图片地址4', '图片地址5', '图片地址6', '图片地址7', '图片地址8', '图片地址9'].join(",") + "\r\n"
   csvContent += ['发布时间', '主题', '内容'].join(",") + "\r\n"
@@ -716,7 +756,7 @@ function fetchPost(variables) {
       // console.log(feeds);
       if (feeds && feeds.nodes) {
         jocker.addPosts(feeds.nodes);
-        select("#start").innerText = `已整理${jocker.allNodes.length}条...`
+        select("#start").innerText = `已整理 ${jocker.allNodes.length} 条...`
         // console.log('fetch success got data', feeds.nodes.length)
         const pageInfo = feeds.pageInfo;
         jocker.updatePageInfo(
