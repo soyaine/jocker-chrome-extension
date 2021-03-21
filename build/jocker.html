@@ -1,3 +1,4 @@
+<!-- Copyright (C) 2021 Soyaine - All Rights Reserved -->
 <html>
 
 <head>
@@ -20,9 +21,41 @@
       box-sizing: border-box;
     }
 
+    .header-jocker {
+      float: left;
+      width: 200px;
+      text-align: left;
+    }
+
     #icon-jocker {
       width: 28px;
-      float: left;
+    }
+
+    .moreinfo {
+      visibility: hidden;
+      position: absolute;
+      text-align: left;
+      top: 10px;
+      margin-left: 42px;
+      color: #7a7a7a;
+      font-size: 0.9em;
+    }
+
+    .header-jocker:hover .moreinfo, .moreinfo:hover {
+      visibility: visible;
+    }
+
+    .moreinfo:hover {
+      visibility: visible;
+    }
+
+    .info-link {
+      color: #7a7a7a;
+      text-decoration: none;
+    }
+
+    .info-link:hover {
+      color: #2c2c2c;
     }
 
     #layouts {
@@ -59,7 +92,7 @@
     .topics {
       width: 16em;
       position: fixed;
-      top: 56px;
+      top: 60px;
       left: 8px;
       bottom: 16px;
       height: 100%;
@@ -97,7 +130,7 @@
     .posts {
       padding: 16px 14px;
       margin-left: 17em;
-      margin-top: 56px;
+      margin-top: 60px;
     }
 
     .p-content {
@@ -125,7 +158,7 @@
       margin-right: 1%;
       margin-top: 1%;
     }
-    
+
     .p-video {
       margin-top: 8px;
       width: 50%;
@@ -264,7 +297,15 @@
       cursor: wait;
       background-color: #ddd;
     }
-    
+
+    .intro-info {
+      position: fixed;
+      color: #8b8b8b;
+      font-size: 0.9em;
+      width: 100%;
+      bottom: 24px;
+    }
+
     #tool {
       display: none;
       position: fixed;
@@ -273,7 +314,7 @@
       cursor: pointer;
     }
 
-    .posts-default + #tool{
+    .posts-default+#tool {
       display: block;
     }
 
@@ -304,13 +345,30 @@
     .hidden-a {
       visibility: hidden;
     }
+
+    .tip {
+      width: 80%;
+      max-width: 600px;
+      margin: 10% auto;
+      display: block;
+      color: #eee;
+    }
   </style>
   <script src="jocker.js"></script>
 </head>
 
 <body>
   <div id="header" class="header">
-    <img id="icon-jocker" src="icon256.png">
+    <div class="header-jocker">
+      <img id="icon-jocker" src="icon256.png">
+      <div class="moreinfo">
+        Created by Soyaine<br />
+        See more in: 
+        <a class="info-link" target="_blank" href="">Homepage</a>,
+        <a class="info-link" target="_blank" href="https://github.com/soyaine/jocker-chrome-extension">GitHub</a>,
+        <a class="info-link" target="_blank" href="http://afdian.net/@soyaine">Sponsor</a>
+      </div>
+    </div>
     <div id="layouts">
       <input class="layout-input active" type="radio" id="default" name="layout" value="default" checked="true">
       <label class="layout-label" for="default">
@@ -370,6 +428,52 @@
   <div id="topics" class="topics">
   </div>
   <div id="posts" class="posts">
+    <svg class="tip" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 776.7651527054607 344.5778968532383"
+      width="776.7651527054607" height="344.5778968532383">
+      <!-- svg-source:excalidraw -->
+      <defs>
+      </defs>
+      <g transform="translate(204.48237051412463 299.09349856764084) rotate(0.0000896679841355507 60 14)"><text x="0"
+          y="21" font-family="Virgil, Segoe UI Emoji" font-size="20px" fill="#6e6e6e" text-anchor="start"
+          style="white-space: pre;" direction="ltr">这边切换主题</text></g>
+      <g>
+        <g transform="translate(662.5179072966594 134.56033443003895) rotate(0 51.68604804064239 -61.24676149085167)">
+          <path
+            d="M-0.8751493275165558 2.0668114483356472 C15.670338062206579 -17.641976338947813, 81.875992213486 -99.29941504759094, 99.2265963838081 -120.14941987589003 M3.8452453954517836 0.7204838530719284 C21.231666831284436 -19.67429751502971, 87.85278091266589 -104.29211693522832, 104.24724540880128 -124.56033443003895"
+            stroke="#6e6e6e" stroke-width="4" fill="none"></path>
+        </g>
+        <g transform="translate(662.5179072966594 134.56033443003895) rotate(0 51.68604804064239 -61.24676149085167)">
+          <path
+            d="M97.64712013341136 -99.75699085863872 C99.50811858437785 -102.46478860018384, 98.23841594917498 -109.51519893672844, 101.81921605041428 -127.96549312859776 M96.17483530975528 -96.41771356138034 C96.87892012527733 -101.93425501269986, 98.76065966312109 -108.73889548051062, 104.25106311610146 -124.27578534275295"
+            stroke="#6e6e6e" stroke-width="4" fill="none"></path>
+        </g>
+        <g transform="translate(662.5179072966594 134.56033443003895) rotate(0 51.68604804064239 -61.24676149085167)">
+          <path
+            d="M81.60214448436469 -112.55069082414278 C88.0767615041358 -111.34124843390899, 91.59400403142138 -114.57471685045527, 101.81921605041428 -127.96549312859776 M80.1298596607086 -109.2114135268844 C84.65028435084062 -111.65036912324862, 90.37658532063979 -115.38949135437022, 104.25106311610146 -124.27578534275295"
+            stroke="#6e6e6e" stroke-width="4" fill="none"></path>
+        </g>
+      </g>
+      <g transform="translate(582.2824803774058 152.8935016193986) rotate(0 60 14)"><text x="0" y="21"
+          font-family="Virgil, Segoe UI Emoji" font-size="20px" fill="#6e6e6e" text-anchor="start"
+          style="white-space: pre;" direction="ltr">那边切换样式</text></g>
+      <g>
+        <g transform="translate(185.28248037740588 322.89351687818765) rotate(0 -86.17643407031895 3.738330501765006)">
+          <path
+            d="M-1.4686152637004852 -1.1273940861225127 C-30.639894980192185 0.34519076546033256, -144.20803952415787 6.769694155454637, -173.23993732333184 8.880143183469773 M2.9296122367680075 -4.207718971520663 C-26.743871683329342 -2.394246368358533, -146.46990572854875 9.879475334535044, -175.28248037740588 11.684379975050689"
+            stroke="#6e6e6e" stroke-width="4" fill="none"></path>
+        </g>
+        <g transform="translate(185.28248037740588 322.89351687818765) rotate(0 -86.17643407031895 3.738330501765006)">
+          <path
+            d="M-149.6754851259289 -0.4188635603069102 C-160.13525314417572 0.4292831204150058, -166.24522304820925 4.846819466138964, -173.96106513187289 13.719697097986938 M-146.10761781707384 0.10400218213808188 C-154.24959551378527 0.5448471124409375, -164.2878420933067 3.679812361736528, -175.66904907271265 11.626888821572066"
+            stroke="#6e6e6e" stroke-width="4" fill="none"></path>
+        </g>
+        <g transform="translate(185.28248037740588 322.89351687818765) rotate(0 -86.17643407031895 3.738330501765006)">
+          <path
+            d="M-147.9327294937857 20.028209706849754 C-159.0331143048976 13.418450185438246, -165.7771821719338 10.39636202561639, -173.96106513187289 13.719697097986938 M-144.36486218493064 20.551075449294746 C-153.10386964145795 15.441877798086615, -163.61234834310784 13.059792649497961, -175.66904907271265 11.626888821572066"
+            stroke="#6e6e6e" stroke-width="4" fill="none"></path>
+        </g>
+      </g>
+    </svg>
   </div>
   <div id="tool">
     <div class="tool-tip">
@@ -381,13 +485,20 @@
         d="m12 16c-.205 0-.401-.084-.542-.232l-5.25-5.5c-.455-.476-.117-1.268.542-1.268h2.75v-5.75c0-.689.561-1.25 1.25-1.25h2.5c.689 0 1.25.561 1.25 1.25v5.75h2.75c.659 0 .997.792.542 1.268l-5.25 5.5c-.141.148-.337.232-.542.232z" />
       <path
         d="m22.25 22h-20.5c-.965 0-1.75-.785-1.75-1.75v-.5c0-.965.785-1.75 1.75-1.75h20.5c.965 0 1.75.785 1.75 1.75v.5c0 .965-.785 1.75-1.75 1.75z" />
-      </svg>
+    </svg>
   </div>
   <div id="intro">
     <div class="intro-content">
       <img id="intro-jocker" src="icon256.png">
       <div class="intro-desc">即刻抽屉<br />换一种方式重温过去</div>
       <div id="start" class="intro-start">开始整理</div>
+    </div>
+    <div class="intro-info">
+      Created by Soyaine<br />
+      See more in: 
+      <a class="info-link" target="_blank" href="">Homepage</a>,
+      <a class="info-link" target="_blank" href="https://github.com/soyaine/jocker-chrome-extension">GitHub</a>,
+      <a class="info-link" target="_blank" href="http://afdian.net/@soyaine">Sponsor</a>
     </div>
   </div>
 </body>
