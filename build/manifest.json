@@ -26,7 +26,7 @@
   ],
   "web_accessible_resources": [{
     "resources": ["icon256.png"],
-    "matches": ["https://web.okjike.com/me"]
+    "matches": ["https://*/*"]
   }],
   "host_permissions": [
     "https://web.okjike.com/",
