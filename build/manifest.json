@@ -1,6 +1,6 @@
 {
-  "name": "Jocker Extension",
-  "description": "Jike Web Tool",
+  "name": "即刻抽屉 Jocker Extension",
+  "description": "即刻抽屉，整理和备份即刻动态的工具",
   "version": "3.0.0",
   "manifest_version": 3,
   "icons": {
