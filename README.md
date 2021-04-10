@@ -2,6 +2,12 @@
 
 即刻抽屉是一个可以按主题查看和备份自己即刻动态的工具，让你换一种方式来回顾自己的动态。
 
+点击下图可查看完整演示视频：
+
+[![jocker-example](https://user-images.githubusercontent.com/12845017/114270252-e7593d80-9a3d-11eb-8de0-fb5ac831e78a.gif)](https://videocdn.jellow.site/lot7v1pPrPHjXKIojEA2x5fiehxb.mp4?sign=90edd4afa72f48439c94f38b0ed42aca&t=6071a156)
+
+
+
 ## 安装
 Jocker 是一款 Chrome 插件，基于 Manifest V3 标准进行开发，请使用 Chromium 内核的浏览器，并更新到最新版本。
 
