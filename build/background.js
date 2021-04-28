@@ -24,4 +24,11 @@ chrome.runtime.onMessage.addListener(function (msg, sender) {
   if (msg.openExtension) {
     focusOrCreateTab(chrome.runtime.getURL("/jocker.html"));
   }
+  if (msg.careThisOne) {
+    focusOrCreateTab(chrome.runtime.getURL("/heart.html"));
+  }
+});
+
+chrome.action.onClicked.addListener(function () {
+    focusOrCreateTab(chrome.runtime.getURL("/heart.html"));
 });

@@ -19,6 +19,13 @@
     "run_at": "document_start",
     "js": ["me.js"],
     "css": ["me.css"]
+  }, {
+    "matches": [
+      "https://web.okjike.com/u/*"
+    ],
+    "run_at": "document_start",
+    "js": ["user.js"],
+    "css": ["me.css"]
   }],
   "permissions": [
     "tabs",
