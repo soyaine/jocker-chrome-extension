@@ -90,44 +90,6 @@ function JockerCache() {
   this.addApolloData = function (apollo) {
     // console.log("apollo", apollo);
     this._user_id = apollo["$ROOT_QUERY.profile"]["username"];
-    let nodes = apollo[`$User:${this._user_id}.feeds({})`]["nodes"];
-
-    nodes = nodes.map(function (node) {
-      const post = apollo[node.id];
-      const needRenderProps = ["topic", "linkInfo"];
-      needRenderProps.forEach(function (key) {
-        if (post[key]) {
-          post[key] = apollo[post[key]["id"]];
-        }
-      });
-      if (post["pictures"]) {
-        post["pictures"] = post["pictures"].map(function (pic) {
-          return apollo[pic["id"]];
-        });
-      }
-      if (post["video"]) {
-        const pid = post["id"];
-        const ptype = post["type"];
-        const query = `$ROOT_QUERY.mediaMetaPlay({"messageId":"${pid}","messageType":"${ptype}"})`
-        post["video"] = apollo[query]["url"]
-      }
-      if (post["target"]) {
-        const targetPost = apollo[post["target"]["id"]]
-        if (targetPost["user"] && targetPost["user"]["id"]) {
-          targetPost["user"] = apollo[targetPost["user"]["id"]]
-        }
-        post["target"] = targetPost
-      }
-
-      return post;
-    });
-    this.addPosts(nodes);
-
-    const pageInfo = apollo[`$User:${this._user_id}.feeds({}).pageInfo`];
-    const lastId = pageInfo["loadMoreKey"] && pageInfo["loadMoreKey"]["json"] && pageInfo["loadMoreKey"]["json"]["lastId"] || ''
-
-    console.log("pageInfo", pageInfo);
-    this.updatePageInfo(pageInfo["hasNextPage"], lastId);
   };
 
   this.updatePageInfo = function (hasNext, lastId) {
@@ -149,6 +111,11 @@ function JockerCache() {
       },
     };
   };
+  this.getFirstVariables = function () {
+    return {
+      username: this._user_id,
+    }
+  }
   this.getPostsInTopic = function (topicId) {
     let nodes;
     if (topicId === "所有动态") {
@@ -814,12 +781,7 @@ function startJocker(e) {
     console.log("jocker.js get chrome storage");
     let apollo = data.firstPagePost.props.pageProps.apolloState.data;
     jocker.addApolloData(apollo);
-    if (jocker.hasNextPage) {
-      fetchPost(jocker.getQueryVariables());
-    } else {
-      stopLoading();
-      reloadTopics();
-    }
+    fetchPost(jocker.getFirstVariables());
   });
 }
 
