@@ -4,36 +4,21 @@ function select(selector) {
   return document.querySelector(selector);
 }
 function hasPic(node) {
-  return node.pictures && node.pictures.length > 0
+  return node.pictures && node.pictures.length > 0;
 }
-function snackToCamel (str) {
+function snackToCamel(str) {
   if (!str) {
-    return ""
+    return "";
   }
-  return str.toLowerCase().replace(/([-_]\w)/g, g => g[1].toUpperCase())
+  return str.toLowerCase().replace(/([-_]\w)/g, (g) => g[1].toUpperCase());
 }
 
-function JockerCache() {
-  this._post_map = {};
-  this._topic_map = {};
-  this._last_id = "";
-  this._user_id = "";
+class JockerCache {
+  constructor() {
+    this._mode = ''; // feed or collection
+    this._all_nodes_title = '';
+    this._mode_button = '';
 
-  this.allNodes = [];
-  this.allTopics = [];
-  this.hasNextPage = false;
-  this.postFetching = false;
-
-  this.currenLayoutMode = "default";
-  this.currentFilterMode = "default";
-  this.currentTopic = "";
-
-  this.now = new Date();
-  this.nowYear = this.now.getFullYear();
-  this.nowMonth = this.now.getMonth();
-  this.nowDate = this.now.getDate();
-
-  this.reset = function () {
     this._post_map = {};
     this._topic_map = {};
     this._last_id = "";
@@ -47,134 +32,168 @@ function JockerCache() {
     this.currenLayoutMode = "default";
     this.currentFilterMode = "default";
     this.currentTopic = "";
-  };
 
-  this.addPostToTopic = function (node, topicName) {
-    var jocker = this;
-    if (!jocker._topic_map[topicName]) {
-      jocker._topic_map[topicName] = {
+    this.now = new Date();
+    this.nowYear = this.now.getFullYear();
+    this.nowMonth = this.now.getMonth();
+    this.nowDate = this.now.getDate();
+  }
+
+  reset() {
+    this._post_map = {};
+    this._topic_map = {};
+    this._last_id = "";
+    this._user_id = "";
+
+    this.allNodes = [];
+    this.allTopics = [];
+    this.hasNextPage = false;
+    this.postFetching = false;
+
+    this.currenLayoutMode = "default";
+    this.currentFilterMode = "default";
+    this.currentTopic = "";
+  }
+
+  addPostToTopic(node, topicName) {
+    if (!this._topic_map[topicName]) {
+      this._topic_map[topicName] = {
         postLen: 0,
         picPostLen: 0,
         nodes: [],
       };
-      jocker.allTopics.push(topicName);
+      this.allTopics.push(topicName);
     }
-    jocker._topic_map[topicName].nodes.push(node);
-    jocker._topic_map[topicName].postLen++;
+    this._topic_map[topicName].nodes.push(node);
+    this._topic_map[topicName].postLen++;
     if (hasPic(node)) {
-      jocker._topic_map[topicName].picPostLen += node.pictures.length;
+      this._topic_map[topicName].picPostLen += node.pictures.length;
     }
   }
 
-  this.addPosts = function (nodes) {
-    // console.log(nodes);
-    var jocker = this;
-    nodes.forEach(function (node) {
-      jocker.allNodes.push(node);
+  addPosts(nodes) {
+    nodes.forEach((node) => {
+      this.allNodes.push(node);
 
       let topicName = node["topic"] ? node["topic"]["content"] : "无";
       let topicId = node["topic"] ? node["topic"]["id"] : "no";
-      jocker.addPostToTopic(node, topicName);
+      this.addPostToTopic(node, topicName);
 
       if (node.createdAt) {
         const create = new Date(node.createdAt);
-        if (create.getFullYear() !== jocker.nowYear
-          && create.getMonth() === jocker.nowMonth
-          && create.getDate() == jocker.nowDate) {
-          jocker.addPostToTopic(node, "往年今日🌒");
+        if (create.getFullYear() !== this.nowYear && create.getMonth() === this.nowMonth && create.getDate() == this.nowDate) {
+          this.addPostToTopic(node, "🫐 往年今日");
         }
+
+        this.addPostToTopic(node, `🍊 ${create.getFullYear()}年`);
+      }
+
+      const content = node.content;
+      const re = /#([\u4e00-\u9fa5]+)/g; // Matches Chinese characters within hashtags
+      let match;
+      if (match) {
+        console.log('content', content, match);
+      }
+      while ((match = re.exec(content))) {
+        const topic = '🥥 ' + match[1];
+        this.addPostToTopic(node, topic);
       }
     });
-  };
+  }
 
-  this.addApolloData = function (apollo) {
-    // console.log("apollo", apollo);
+  addApolloData(apollo) {
     this._user_id = apollo["$ROOT_QUERY.profile"]["username"];
-  };
+  }
 
-  this.updatePageInfo = function (hasNext, lastId) {
+  updatePageInfo(hasNext, lastId) {
     this._last_id = lastId;
     this.hasNextPage = hasNext;
-  };
-  this.updateUser = function (username) {
-    this._user_id = username;
-  };
+  }
 
-  this.getTopicList = function () {
-    return this._topic_map.keys();
-  };
-  this.getQueryVariables = function () {
+  updateUser(username) {
+    this._user_id = username;
+  }
+
+  getTopicList() {
+    return Object.keys(this._topic_map);
+  }
+
+  getQueryVariables() {
     return {
       username: this._user_id,
       loadMoreKey: {
         lastId: this._last_id,
+        _id: this._last_id,
       },
     };
-  };
-  this.getFirstVariables = function () {
+  }
+
+  getFirstVariables() {
     return {
       username: this._user_id,
-    }
+    };
   }
-  this.getPostsInTopic = function (topicId) {
+
+  getPostsInTopic(topicId) {
     let nodes;
-    if (topicId === "所有动态") {
+    if (topicId === jocker._all_nodes_title) {
       nodes = this.allNodes;
     } else {
-      nodes = this._topic_map[topicId] && this._topic_map[topicId].nodes || [];
+      nodes = this._topic_map[topicId]?.nodes || [];
     }
 
     if (this.currentFilterMode === "picture") {
-      nodes = nodes.filter((node) => {
-        return hasPic(node)
-      });
+      nodes = nodes.filter((node) => hasPic(node));
     }
 
     return nodes;
-  };
-  this.getTopicsSortByCount = function () {
-    let all_nodes = this.allNodes
-    let postLenKey = 'postLen'
-    const jocker = this;
+  }
 
-    if (jocker.currentFilterMode === 'picture') {
-      postLenKey = 'picPostLen'
-      all_nodes = all_nodes.filter((node) => {
-        return hasPic(node)
-      })
+  getTopicsSortByCount() {
+    let all_nodes = this.allNodes;
+    let postLenKey = "postLen";
+
+    if (this.currentFilterMode === "picture") {
+      postLenKey = "picPostLen";
+      all_nodes = all_nodes.filter((node) => hasPic(node));
     }
-    
-    keysSorted = Object.keys(this._topic_map).sort(
-      (a, b) => this._topic_map[b][postLenKey] - this._topic_map[a][postLenKey]
-    );
-    keysSorted = keysSorted.map((key) => {
-      return [key, this._topic_map[key][postLenKey]];
+
+    const keysSorted = Object.keys(this._topic_map).sort((a, b) => {
+      const alen = this._topic_map[a][postLenKey];
+      const blen = this._topic_map[b][postLenKey];
+
+      // 如果相等，则按照a和b的字母排序
+      if (alen === blen) {
+        return a.localeCompare(b);
+      } else {
+        return this._topic_map[b][postLenKey] - this._topic_map[a][postLenKey]
+      }
     });
-    keysSorted.splice(0, 0, ["所有动态", all_nodes.length]);
-    return keysSorted;
-  };
+    const sortedTopics = keysSorted.map((key) => [key, this._topic_map[key][postLenKey]]);
+    sortedTopics.splice(0, 0, [jocker._all_nodes_title, all_nodes.length]);
+    return sortedTopics;
+  }
 }
 
-var jocker = new JockerCache();
-
+const jocker = new JockerCache();
 
 function loadPostsDefault(postsElem, nodes) {
   nodes.forEach((post) => {
-    var postElem = document.createElement("div");
+    const postElem = document.createElement("div");
     postElem.setAttribute("class", `post post-${jocker.currenLayoutMode}`);
 
-    var dateElem = document.createElement("div");
+    const dateElem = document.createElement("div");
     dateElem.setAttribute("class", "p-date");
     dateElem.innerText = new Date(post.createdAt).toLocaleString();
     postElem.appendChild(dateElem);
 
-    var contentElem = document.createElement("div");
+    const contentElem = document.createElement("div");
     contentElem.setAttribute("class", "p-content");
     contentElem.innerText = post.content;
     postElem.appendChild(contentElem);
 
     if (post.linkInfo) {
-      var link = document.createElement("a");
+      const link = document.createElement("a");
       link.setAttribute("class", "p-link");
       link.setAttribute("href", post.linkInfo.linkUrl);
       link.innerText = post.linkInfo.title;
@@ -183,7 +202,7 @@ function loadPostsDefault(postsElem, nodes) {
     }
 
     if (post.pictures && post.pictures.length) {
-      var pics = document.createElement("div");
+      const pics = document.createElement("div");
       pics.setAttribute("class", "p-pics");
 
       post.pictures.forEach((pic) => {
@@ -198,7 +217,7 @@ function loadPostsDefault(postsElem, nodes) {
     }
 
     if (post.video) {
-      var videoElem = document.createElement("video");
+      const videoElem = document.createElement("video");
       videoElem.setAttribute("controls", "controls");
       videoElem.setAttribute("class", "p-video");
       videoElem.setAttribute("src", post.video);
@@ -207,12 +226,10 @@ function loadPostsDefault(postsElem, nodes) {
 
     if (post.target) {
       const target = post.target;
-      var tragetElem = document.createElement("a");
+      const tragetElem = document.createElement("a");
       tragetElem.setAttribute("target", "_blank");
       tragetElem.setAttribute("href", `https://web.okjike.com/${snackToCamel(post.targetType)}/${target.id}`);
-      tragetElem.innerHTML = `
-        ${target.user && target.user.screenName}: ${target.content}
-      `
+      tragetElem.innerHTML = `${target.user && target.user.screenName}: ${target.content}`;
       tragetElem.setAttribute("class", "p-target");
       postElem.appendChild(tragetElem);
     }
@@ -285,14 +302,14 @@ function loadPostsOfTopic(topic) {
 function reloadTopics() {
   const topicsElem = select("#topics");
   const topics = jocker.getTopicsSortByCount();
-  topicsElem.innerHTML = ''
+  topicsElem.innerHTML = "";
 
   topics.forEach((topic) => {
     var topic_name = topic[0];
     var topic_count = topic[1];
 
     if (topic_count === 0) {
-      return
+      return;
     }
 
     var topicElem = document.createElement("div");
@@ -324,11 +341,10 @@ function reloadTopics() {
   });
 }
 
-
 function stopLoading() {
-  jocker.postFetching = false
+  jocker.postFetching = false;
 
-  select('#intro').setAttribute('style', 'display: none;')
+  select("#intro").setAttribute("style", "display: none;");
 }
 
 function changeLayout(e) {
@@ -350,35 +366,35 @@ function changeLayout(e) {
 }
 
 function downloadCsv() {
-  if (jocker.currentTopic == '') {
-    return
+  if (jocker.currentTopic == "") {
+    return;
   }
 
   const nodes = jocker.getPostsInTopic(jocker.currentTopic);
-  let csvContent = "\uFEFF"
+  let csvContent = "\uFEFF";
   // csvContent += ['发布时间', '内容', '链接名称', '链接地址', '图片地址1', '图片地址2', '图片地址3', '图片地址4', '图片地址5', '图片地址6', '图片地址7', '图片地址8', '图片地址9'].join(",") + "\r\n"
-  csvContent += ['发布时间', '主题', '内容'].join(",") + "\r\n"
+  csvContent += ["发布时间", "主题", "内容"].join(",") + "\r\n";
 
-  nodes.forEach(function(post) {
-      let row = [
-        `"${post.createdAt}"`,
-        `"${post.topic && post.topic.content || '无主题'}"`,
-        `"${post.content}"`
-        // `"${post.linkInfo && post.linkInfo.title || ''}"`,
-        // `"${post.linkInfo && post.linkInfo.linkUrl || ''}"`,
-        // post.pictures && (post.pictures.map(pic => { return `"${pic.picUrl}"` }).join(',') + '"",'.repeat(9 - post.pictures.length))
-      ].join(",");
-      csvContent += row + "\r\n";
+  nodes.forEach(function (post) {
+    let row = [
+      `"${post.createdAt}"`,
+      `"${(post.topic && post.topic.content) || "无主题"}"`,
+      `"${post.content}"`,
+      // `"${post.linkInfo && post.linkInfo.title || ''}"`,
+      // `"${post.linkInfo && post.linkInfo.linkUrl || ''}"`,
+      // post.pictures && (post.pictures.map(pic => { return `"${pic.picUrl}"` }).join(',') + '"",'.repeat(9 - post.pictures.length))
+    ].join(",");
+    csvContent += row + "\r\n";
   });
 
-  var csvData = new Blob([csvContent], { type: 'text/csv;charset=utf-8' }); //new way
+  var csvData = new Blob([csvContent], { type: "text/csv;charset=utf-8" }); //new way
   var encodedUri = URL.createObjectURL(csvData);
 
-  const a = document.createElement('a');
-  a.setAttribute('class', 'hidden-a');
+  const a = document.createElement("a");
+  a.setAttribute("class", "hidden-a");
   document.body.appendChild(a);
   a.href = encodedUri;
-  a.download = `${new Date().toLocaleDateString('sv-SE')}-${jocker.currentTopic}-jocker-backup.csv`
+  a.download = `${new Date().toLocaleDateString("sv-SE")}-${jocker.currentTopic}-jocker-backup.csv`;
   a.click();
   window.URL.revokeObjectURL(encodedUri);
   document.body.removeChild(a);
@@ -397,361 +413,37 @@ function fetchPost(variables) {
       Accept: "application/json",
     },
     body: JSON.stringify({
-      operationName: "UserFeeds",
-      query: `query UserFeeds($username: String!, $loadMoreKey: JSON) {
-            userProfile(username: $username) {
-                username
-                feeds(loadMoreKey: $loadMoreKey) {
-                    ...BasicFeedItem
-                    __typename
-                }
-                __typename
-            }
-        }
-        
-        fragment BasicFeedItem on FeedsConnection {
-            pageInfo {
-                loadMoreKey
-                hasNextPage
-                __typename
-            }
-            nodes {
-                ... on ReadSplitBar {
-                    id
-                    type
-                    text
-                    __typename
-                }
-                ... on MessageEssential {
-                    ...FeedMessageFragment
-                    __typename
-                }
-                ... on UserAction {
-                    id
-                    type
-                    action
-                    actionTime
-                    ... on UserFollowAction {
-                        users {
-                            ...TinyUserFragment
-                            ...TinyUserFragment
-                            ...TinyUserFragment
-                            ...TinyUserFragment
-                            ...TinyUserFragment
-                            ...TinyUserFragment
-                            ...TinyUserFragment
-                            ...TinyUserFragment
-                            __typename
-                        }
-                        allTargetUsers {
-                            ...TinyUserFragment
-                            following
-                            statsCount {
-                                followedCount
-                                __typename
-                            }
-                            ...TinyUserFragment
-                            ...TinyUserFragment
-                            ...TinyUserFragment
-                            ...TinyUserFragment
-                            ...TinyUserFragment
-                            ...TinyUserFragment
-                            ...TinyUserFragment
-                            __typename
-                        }
-                        __typename
-                    }
-                    ... on UserRespectAction {
-                        users {
-                            ...TinyUserFragment
-                            ...TinyUserFragment
-                            ...TinyUserFragment
-                            ...TinyUserFragment
-                            ...TinyUserFragment
-                            ...TinyUserFragment
-                            ...TinyUserFragment
-                            ...TinyUserFragment
-                            __typename
-                        }
-                        targetUsers {
-                            ...TinyUserFragment
-                            ...TinyUserFragment
-                            ...TinyUserFragment
-                            ...TinyUserFragment
-                            ...TinyUserFragment
-                            ...TinyUserFragment
-                            ...TinyUserFragment
-                            ...TinyUserFragment
-                            __typename
-                        }
-                        content
-                        __typename
-                    }
-                    __typename
-                }
-                __typename
-            }
-            __typename
-        }
-        
-        fragment FeedMessageFragment on MessageEssential {
-            ...EssentialFragment
-            ... on OriginalPost {
-                ...LikeableFragment
-                ...CommentableFragment
-                ...RootMessageFragment
-                ...UserPostFragment
-                ...MessageInfoFragment
-                pinned {
-                    personalUpdate
-                    __typename
-                }
-                __typename
-            }
-            ... on Repost {
-                ...LikeableFragment
-                ...CommentableFragment
-                ...UserPostFragment
-                ...RepostFragment
-                pinned {
-                    personalUpdate
-                    __typename
-                }
-                __typename
-            }
-            ... on Question {
-                ...UserPostFragment
-                __typename
-            }
-            ... on OfficialMessage {
-                ...LikeableFragment
-                ...CommentableFragment
-                ...MessageInfoFragment
-                ...RootMessageFragment
-                __typename
-            }
-            __typename
-        }
-        
-        fragment EssentialFragment on MessageEssential {
-            id
-            type
-            content
-            shareCount
-            repostCount
-            createdAt
-            collected
-            pictures {
-                format
-                watermarkPicUrl
-                picUrl
-                thumbnailUrl
-                smallPicUrl
-                width
-                height
-                __typename
-            }
-            urlsInText {
-                url
-                originalUrl
-                title
-                __typename
-            }
-            __typename
-        }
-        
-        fragment LikeableFragment on LikeableMessage {
-            liked
-            likeCount
-            __typename
-        }
-        
-        fragment CommentableFragment on CommentableMessage {
-            commentCount
-            __typename
-        }
-        
-        fragment RootMessageFragment on RootMessage {
-            topic {
-                id
-                content
-                __typename
-            }
-            __typename
-        }
-        
-        fragment UserPostFragment on MessageUserPost {
-            readTrackInfo
-            user {
-                ...TinyUserFragment
-                __typename
-            }
-            __typename
-        }
-        
-        fragment TinyUserFragment on UserInfo {
-            avatarImage {
-                thumbnailUrl
-                smallPicUrl
-                picUrl
-                __typename
-            }
-            username
-            screenName
-            briefIntro
-            __typename
-        }
-        
-        fragment MessageInfoFragment on MessageInfo {
-            video {
-                title
-                type
-                image {
-                    picUrl
-                    __typename
-                }
-                __typename
-            }
-            linkInfo {
-                originalLinkUrl
-                linkUrl
-                title
-                pictureUrl
-                linkIcon
-                audio {
-                    title
-                    type
-                    image {
-                        thumbnailUrl
-                        picUrl
-                        __typename
-                    }
-                    author
-                    __typename
-                }
-                video {
-                    title
-                    type
-                    image {
-                        picUrl
-                        __typename
-                    }
-                    __typename
-                }
-                __typename
-            }
-            __typename
-        }
-        
-        fragment RepostFragment on Repost {
-            target {
-                ...RepostTargetFragment
-                __typename
-            }
-            targetType
-            __typename
-        }
-        
-        fragment RepostTargetFragment on RepostTarget {
-            ... on OriginalPost {
-                id
-                type
-                content
-                pictures {
-                    thumbnailUrl
-                    __typename
-                }
-                topic {
-                    id
-                    content
-                    __typename
-                }
-                user {
-                    ...TinyUserFragment
-                    __typename
-                }
-                __typename
-            }
-            ... on Repost {
-                id
-                type
-                content
-                pictures {
-                    thumbnailUrl
-                    __typename
-                }
-                user {
-                    ...TinyUserFragment
-                    __typename
-                }
-                __typename
-            }
-            ... on Question {
-                id
-                type
-                content
-                pictures {
-                    thumbnailUrl
-                    __typename
-                }
-                user {
-                    ...TinyUserFragment
-                    __typename
-                }
-                __typename
-            }
-            ... on Answer {
-                id
-                type
-                content
-                pictures {
-                    thumbnailUrl
-                    __typename
-                }
-                user {
-                    ...TinyUserFragment
-                    __typename
-                }
-                __typename
-            }
-            ... on OfficialMessage {
-                id
-                type
-                content
-                pictures {
-                    thumbnailUrl
-                    __typename
-                }
-                __typename
-            }
-            ... on DeletedRepostTarget {
-                status
-                __typename
-            }
-            __typename
-        }
-        `,
-      variables: variables,
+      operationName: jocker._mode === 'feed' ? "UserFeeds" : "UserCollections",
+      query: jocker._mode === 'feed' ? QueryUserFeed : QueryUserCollections,
+      variables,
     }),
   })
     .then((r) => r.json())
     .then((data) => {
-      // console.log("data returned:", data);
       data = data.data;
-      const feeds = data && data.userProfile && data.userProfile.feeds;
-      // console.log(feeds);
+
+      let feeds = null;
+      let lastid = null;
+
+      if (jocker._mode === 'feed') {
+        feeds = data && data.userProfile && data.userProfile.feeds;
+        pageInfo = feeds.pageInfo;
+        lastid = pageInfo.loadMoreKey && pageInfo.loadMoreKey.lastId;
+      } else {
+        feeds = data && data.viewer && data.viewer.collections;
+        pageInfo = feeds.pageInfo;
+        lastid = pageInfo.loadMoreKey && pageInfo.loadMoreKey._id;
+      }
+
       if (feeds && feeds.nodes) {
         jocker.addPosts(feeds.nodes);
-        select("#start").innerText = `已整理 ${jocker.allNodes.length} 条...`
-        // console.log('fetch success got data', feeds.nodes.length)
-        const pageInfo = feeds.pageInfo;
-        jocker.updatePageInfo(
-          pageInfo.hasNextPage,
-          pageInfo.loadMoreKey && pageInfo.loadMoreKey.lastId
-        );
+        console.log('fetch success got data', feeds.nodes.length)
+
+        select(jocker._mode_button).innerText = `已整理 ${jocker.allNodes.length} 条...`;
+        jocker.updatePageInfo(pageInfo.hasNextPage, lastid);
 
         if (jocker.hasNextPage) {
-        // if (jocker.hasNextPage && jocker.allNodes.length < 100) {
+          // if (jocker.hasNextPage && jocker.allNodes.length < 100) {
           fetchPost(jocker.getQueryVariables());
         } else {
           reloadTopics();
@@ -760,22 +452,40 @@ function fetchPost(variables) {
       }
     })
     .catch((err) => {
-      select("#start").innerText = "出错啦"
+      select(jocker._mode_button).innerText = "出错啦";
       console.error(err);
     });
 }
 
+function handleClickStartFeed(e) {
+  jocker._mode = 'feed';
+  jocker._mode_button = '#start-feeds';
+  jocker._all_nodes_title = '所有动态';
+  select("#start-collections").classList.add("disable");
+  select("#myfeed").classList.add("show");
+  startJocker(e);
+}
+
+function handleClickStartCollection(e) {
+  jocker._mode = 'collection';
+  jocker._mode_button = '#start-collections';
+  jocker._all_nodes_title = '所有收藏';
+  select("#start-feeds").classList.add("disable");
+  select("#mycollection").classList.add("show");
+  startJocker(e);
+}
+
 function startJocker(e) {
   if (jocker.postFetching) {
-    return
+    return;
   }
 
-  console.log('start', e)
+  console.log("start", e);
 
-  jocker.postFetching = true
-  e.currentTarget.innerText = '整理中……'
-  e.currentTarget.classList.add('loading')
-  select('#intro-jocker').classList.add('loading')
+  jocker.postFetching = true;
+  e.currentTarget.innerText = "整理中……";
+  e.currentTarget.classList.add("loading");
+  select("#intro-jocker").classList.add("loading");
 
   chrome.storage.local.get("firstPagePost", function (data) {
     console.log("jocker.js get chrome storage");
@@ -797,7 +507,8 @@ function onload() {}
 document.addEventListener("DOMContentLoaded", function () {
   onload();
 
-  select("#start").addEventListener("click", startJocker);
+  select("#start-feeds").addEventListener("click", handleClickStartFeed);
+  select("#start-collections").addEventListener("click", handleClickStartCollection);
   select("#layouts").addEventListener("click", changeLayout);
   select("#tool").addEventListener("click", downloadCsv);
 });

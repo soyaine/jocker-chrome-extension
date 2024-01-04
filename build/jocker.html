@@ -35,10 +35,14 @@
       visibility: hidden;
       position: absolute;
       text-align: left;
-      top: 10px;
+      top: 20px;
       margin-left: 42px;
-      color: #7a7a7a;
-      font-size: 0.9em;
+      color: #404040;
+      font-weight: bold;
+    }
+
+    .moreinfo.show {
+      visibility: visible;
     }
 
     .header-jocker:hover .moreinfo, .moreinfo:hover {
@@ -299,6 +303,10 @@
       background-color: #ddd;
     }
 
+    .intro-start.disable {
+      display: none;
+    }
+
     .intro-info {
       position: fixed;
       color: #8b8b8b;
@@ -355,6 +363,7 @@
       color: #eee;
     }
   </style>
+  <script src="grap.js"></script>
   <script src="jocker.js"></script>
 </head>
 
@@ -362,13 +371,8 @@
   <div id="header" class="header">
     <div class="header-jocker">
       <img id="icon-jocker" src="icon256.png">
-      <div class="moreinfo">
-        Created by Soyaine<br />
-        See more in: 
-        <a class="info-link" target="_blank" href="https://soyaine.github.io/jocker-chrome-extension/">Homepage</a>,
-        <a class="info-link" target="_blank" href="https://github.com/soyaine/jocker-chrome-extension">GitHub</a>,
-        <a class="info-link" target="_blank" href="http://afdian.net/@soyaine">Sponsor</a>
-      </div>
+      <div id="myfeed" class="moreinfo">我发布的动态</div>
+      <div id="mycollection" class="moreinfo">我收藏的动态</div>
     </div>
     <div id="layouts">
       <input class="layout-input active" type="radio" id="default" name="layout" value="default" checked="true">
@@ -492,12 +496,11 @@
     <div class="intro-content">
       <img id="intro-jocker" src="icon256.png">
       <div class="intro-desc">即刻抽屉<br />换一种方式重温过去</div>
-      <div id="start" class="intro-start">开始整理</div>
+      <div id="start-feeds" class="intro-start">开始整理动态</div>
+      <div id="start-collections" class="intro-start">开始整理收藏</div>
     </div>
     <div class="intro-info">
-      Created by Soyaine<br />
       See more in: 
-      <a class="info-link" target="_blank" href="https://soyaine.github.io/jocker-chrome-extension/">Homepage</a>,
       <a class="info-link" target="_blank" href="https://github.com/soyaine/jocker-chrome-extension">GitHub</a>,
       <a class="info-link" target="_blank" href="http://afdian.net/@soyaine">Sponsor</a>
     </div>
