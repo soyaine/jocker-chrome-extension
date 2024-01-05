@@ -95,9 +95,6 @@ class JockerCache {
       const content = node.content;
       const re = /#([\u4e00-\u9fa5]+)/g; // Matches Chinese characters within hashtags
       let match;
-      if (match) {
-        console.log('content', content, match);
-      }
       while ((match = re.exec(content))) {
         const topic = '🥥 ' + match[1];
         this.addPostToTopic(node, topic);
@@ -185,8 +182,6 @@ function loadPostsDefault(postsElem, nodes) {
   nodes.forEach((post) => {
     const postElem = document.createElement("div");
     postElem.setAttribute("class", `post post-${jocker.currenLayoutMode} mode-${jocker._mode}`);
-
-    console.log(post);
 
     if (jocker._mode === 'collection') {
       const userElem = document.createElement("a");
