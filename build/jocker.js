@@ -88,6 +88,10 @@ class JockerCache {
         this.addPostToTopic(node, `🍊 ${create.getFullYear()}年`);
       }
 
+      if (jocker._mode === 'collection') {
+        this.addPostToTopic(node, `🥒 ${node.user.screenName}`);
+      }
+
       const content = node.content;
       const re = /#([\u4e00-\u9fa5]+)/g; // Matches Chinese characters within hashtags
       let match;
@@ -180,9 +184,20 @@ const jocker = new JockerCache();
 function loadPostsDefault(postsElem, nodes) {
   nodes.forEach((post) => {
     const postElem = document.createElement("div");
-    postElem.setAttribute("class", `post post-${jocker.currenLayoutMode}`);
+    postElem.setAttribute("class", `post post-${jocker.currenLayoutMode} mode-${jocker._mode}`);
 
-    const dateElem = document.createElement("div");
+    console.log(post);
+
+    if (jocker._mode === 'collection') {
+      const userElem = document.createElement("a");
+      userElem.setAttribute("class", "p-user");
+      userElem.setAttribute("target", "_blank");
+      userElem.setAttribute("href", `https://web.okjike.com/u/${post.user.username}`);
+      userElem.innerText = post.user.screenName;
+      postElem.appendChild(userElem);
+    }
+
+    const dateElem = document.createElement("span");
     dateElem.setAttribute("class", "p-date");
     dateElem.innerText = new Date(post.createdAt).toLocaleString();
     postElem.appendChild(dateElem);
@@ -438,8 +453,8 @@ function fetchPost(variables) {
       if (feeds && feeds.nodes) {
         jocker.addPosts(feeds.nodes);
         console.log('fetch success got data', feeds.nodes.length)
-
-        select(jocker._mode_button).innerText = `已整理 ${jocker.allNodes.length} 条...`;
+        const type = jocker._mode === 'feed' ? '自己的动态' : '收藏动态';
+        select(jocker._mode_button).innerText = `已整理 ${jocker.allNodes.length} 条${type}...`;
         jocker.updatePageInfo(pageInfo.hasNextPage, lastid);
 
         if (jocker.hasNextPage) {
@@ -472,6 +487,9 @@ function handleClickStartCollection(e) {
   jocker._all_nodes_title = '所有收藏';
   select("#start-feeds").classList.add("disable");
   select("#mycollection").classList.add("show");
+  select("#layouts").classList.add("hidden");
+  select("#switch-style-arrow").classList.add("hidden");
+  select("#switch-style-text").classList.add("hidden");
   startJocker(e);
 }
 

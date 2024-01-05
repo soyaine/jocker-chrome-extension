@@ -10,6 +10,10 @@
       background-color: #fcfcfc;
     }
 
+    .hidden {
+      display: none !important;
+    }
+
     .header {
       position: fixed;
       right: 0;
@@ -42,14 +46,6 @@
     }
 
     .moreinfo.show {
-      visibility: visible;
-    }
-
-    .header-jocker:hover .moreinfo, .moreinfo:hover {
-      visibility: visible;
-    }
-
-    .moreinfo:hover {
       visibility: visible;
     }
 
@@ -141,6 +137,7 @@
     .p-content {
       color: #222;
       line-height: 1.8em;
+      margin-top: 0.5em;
     }
 
     .p-date {
@@ -197,6 +194,15 @@
       position: relative;
       counter-increment: count;
       background-color: #fafafa;
+    }
+
+    .mode-collection .p-user {
+      color: #333;
+      font-size: 1.1em;
+      font-weight: bold;
+      border-bottom: solid 1px #333;
+      text-decoration: none;
+      margin-right: 0.8em;
     }
 
     .p-pic-flow {
@@ -286,7 +292,7 @@
     }
 
     .intro-start {
-      width: 10em;
+      width: 15em;
       padding: 5px 8px;
       margin: 24px auto;
       cursor: pointer;
@@ -441,7 +447,7 @@
       <g transform="translate(204.48237051412463 299.09349856764084) rotate(0.0000896679841355507 60 14)"><text x="0"
           y="21" font-family="Virgil, Segoe UI Emoji" font-size="20px" fill="#6e6e6e" text-anchor="start"
           style="white-space: pre;" direction="ltr">这边切换主题</text></g>
-      <g>
+      <g id="switch-style-arrow">
         <g transform="translate(662.5179072966594 134.56033443003895) rotate(0 51.68604804064239 -61.24676149085167)">
           <path
             d="M-0.8751493275165558 2.0668114483356472 C15.670338062206579 -17.641976338947813, 81.875992213486 -99.29941504759094, 99.2265963838081 -120.14941987589003 M3.8452453954517836 0.7204838530719284 C21.231666831284436 -19.67429751502971, 87.85278091266589 -104.29211693522832, 104.24724540880128 -124.56033443003895"
@@ -458,7 +464,7 @@
             stroke="#6e6e6e" stroke-width="4" fill="none"></path>
         </g>
       </g>
-      <g transform="translate(582.2824803774058 152.8935016193986) rotate(0 60 14)"><text x="0" y="21"
+      <g id="switch-style-text" transform="translate(582.2824803774058 152.8935016193986) rotate(0 60 14)"><text x="0" y="21"
           font-family="Virgil, Segoe UI Emoji" font-size="20px" fill="#6e6e6e" text-anchor="start"
           style="white-space: pre;" direction="ltr">那边切换样式</text></g>
       <g>
