@@ -1,7 +1,7 @@
 {
   "name": "Jocker Extension",
   "description": "Jike Web Tool",
-  "version": "3.1.2",
+  "version": "3.1.4",
   "manifest_version": 3,
   "icons": {
     "256": "icon256.png"
@@ -30,6 +30,6 @@
   }],
   "host_permissions": [
     "https://web.okjike.com/",
-    "https://web-api.okjike.com/"
+    "https://api.ruguoapp.com/"
   ]
 }

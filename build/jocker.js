@@ -15,9 +15,9 @@ function snackToCamel(str) {
 
 class JockerCache {
   constructor() {
-    this._mode = ''; // feed or collection
-    this._all_nodes_title = '';
-    this._mode_button = '';
+    this._mode = ""; // feed or collection
+    this._all_nodes_title = "";
+    this._mode_button = "";
 
     this._post_map = {};
     this._topic_map = {};
@@ -88,7 +88,7 @@ class JockerCache {
         this.addPostToTopic(node, `🍊 ${create.getFullYear()}年`);
       }
 
-      if (jocker._mode === 'collection') {
+      if (jocker._mode === "collection") {
         this.addPostToTopic(node, `🥒 ${node.user.screenName}`);
       }
 
@@ -96,7 +96,7 @@ class JockerCache {
       const re = /#([\u4e00-\u9fa5]+)/g; // Matches Chinese characters within hashtags
       let match;
       while ((match = re.exec(content))) {
-        const topic = '🥥 ' + match[1];
+        const topic = "🥥 " + match[1];
         this.addPostToTopic(node, topic);
       }
     });
@@ -167,7 +167,7 @@ class JockerCache {
       if (alen === blen) {
         return a.localeCompare(b);
       } else {
-        return this._topic_map[b][postLenKey] - this._topic_map[a][postLenKey]
+        return this._topic_map[b][postLenKey] - this._topic_map[a][postLenKey];
       }
     });
     const sortedTopics = keysSorted.map((key) => [key, this._topic_map[key][postLenKey]]);
@@ -183,7 +183,7 @@ function loadPostsDefault(postsElem, nodes) {
     const postElem = document.createElement("div");
     postElem.setAttribute("class", `post post-${jocker.currenLayoutMode} mode-${jocker._mode}`);
 
-    if (jocker._mode === 'collection') {
+    if (jocker._mode === "collection") {
       const userElem = document.createElement("a");
       userElem.setAttribute("class", "p-user");
       userElem.setAttribute("target", "_blank");
@@ -410,10 +410,6 @@ function downloadCsv() {
   document.body.removeChild(a);
 }
 
-let COOKIES = "";
-let COOKIESTR = "";
-let personalPosts = [];
-
 function fetchPost(variables) {
   fetch("https://web-api.okjike.com/api/graphql", {
     method: "POST",
@@ -423,8 +419,8 @@ function fetchPost(variables) {
       Accept: "application/json",
     },
     body: JSON.stringify({
-      operationName: jocker._mode === 'feed' ? "UserFeeds" : "UserCollections",
-      query: jocker._mode === 'feed' ? QueryUserFeed : QueryUserCollections,
+      operationName: jocker._mode === "feed" ? "UserFeeds" : "UserCollections",
+      query: jocker._mode === "feed" ? QueryUserFeed : QueryUserCollections,
       variables,
     }),
   })
@@ -435,7 +431,7 @@ function fetchPost(variables) {
       let feeds = null;
       let lastid = null;
 
-      if (jocker._mode === 'feed') {
+      if (jocker._mode === "feed") {
         feeds = data && data.userProfile && data.userProfile.feeds;
         pageInfo = feeds.pageInfo;
         lastid = pageInfo.loadMoreKey && pageInfo.loadMoreKey.lastId;
@@ -447,8 +443,8 @@ function fetchPost(variables) {
 
       if (feeds && feeds.nodes) {
         jocker.addPosts(feeds.nodes);
-        console.log('fetch success got data', feeds.nodes.length)
-        const type = jocker._mode === 'feed' ? '自己的动态' : '收藏动态';
+        console.log("fetch success got data", feeds.nodes.length);
+        const type = jocker._mode === "feed" ? "自己的动态" : "收藏动态";
         select(jocker._mode_button).innerText = `已整理 ${jocker.allNodes.length} 条${type}...`;
         jocker.updatePageInfo(pageInfo.hasNextPage, lastid);
 
@@ -468,24 +464,68 @@ function fetchPost(variables) {
 }
 
 function handleClickStartFeed(e) {
-  jocker._mode = 'feed';
-  jocker._mode_button = '#start-feeds';
-  jocker._all_nodes_title = '所有动态';
+  jocker._mode = "feed";
+  jocker._mode_button = "#start-feeds";
+  jocker._all_nodes_title = "所有动态";
+  select("#start-feeds").classList.add("disable");
   select("#start-collections").classList.add("disable");
+  select("#fetch-count").classList.remove("disable");
   select("#myfeed").classList.add("show");
   startJocker(e);
 }
 
 function handleClickStartCollection(e) {
-  jocker._mode = 'collection';
-  jocker._mode_button = '#start-collections';
-  jocker._all_nodes_title = '所有收藏';
+  jocker._mode = "collection";
+  jocker._mode_button = "#start-collections";
+  jocker._all_nodes_title = "所有收藏";
   select("#start-feeds").classList.add("disable");
+  select("#start-collections").classList.add("disable");
+  select("#fetch-count").classList.remove("disable");
   select("#mycollection").classList.add("show");
   select("#layouts").classList.add("hidden");
   select("#switch-style-arrow").classList.add("hidden");
   select("#switch-style-text").classList.add("hidden");
   startJocker(e);
+}
+
+function fetchJikeApiData({ limit = 20, loadMoreKey, username }) {
+  chrome.runtime.sendMessage(
+    {
+      type: "fetchJikeApiData",
+      body: {
+        limit,
+        loadMoreKey,
+        username,
+      },
+      api: `https://api.ruguoapp.com/1.0/${jocker._mode === "feed" ? "personalUpdate/single" : "collections/list"}`,
+    },
+    function (response) {
+      if (response.data) {
+        // 在插件自己的 HTML 里展示数据
+        const nodes = response.data.data;
+        jocker.addPosts(nodes);
+        const type = jocker._mode === "feed" ? "自己的动态" : "收藏动态";
+        // select(jocker._mode_button).innerText = `已整理 ${jocker.allNodes.length} 条${type}...`;
+        jocker.updatePageInfo(nodes.length >= limit, nodes[nodes.length - 1].id);
+        select("#fetch-count").innerText = `已整理 ${jocker.allNodes.length} 条${type}...`;
+
+        if (jocker.hasNextPage) {
+          fetchJikeApiData({
+            limit,
+            loadMoreKey: { lastId: nodes[nodes.length - 1].id },
+            username,
+          });
+        } else {
+          reloadTopics();
+          stopLoading();
+        }
+      } else {
+        select("#fetch-count").innerText = `诶，不太对`;
+        select("#error-info").classList.remove("hidden");
+        console.error("API请求失败", response.error);
+      }
+    }
+  );
 }
 
 function startJocker(e) {
@@ -499,12 +539,8 @@ function startJocker(e) {
   e.currentTarget.innerText = "整理中……";
   e.currentTarget.classList.add("loading");
   select("#intro-jocker").classList.add("loading");
-
-  chrome.storage.local.get("firstPagePost", function (data) {
-    console.log("jocker.js get chrome storage");
-    let apollo = data.firstPagePost.props.pageProps.apolloState.data;
-    jocker.addApolloData(apollo);
-    fetchPost(jocker.getFirstVariables());
+  fetchJikeApiData({
+    limit: 50,
   });
 }
 

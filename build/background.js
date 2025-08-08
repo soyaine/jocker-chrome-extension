@@ -19,9 +19,44 @@ function focusOrCreateTab(url) {
   });
 }
 
-chrome.runtime.onMessage.addListener(function (msg, sender) {
-  console.log("sender", sender, msg);
-  if (msg.openExtension) {
+let jikeAccessToken = "";
+let jikeUsername = "";
+
+chrome.runtime.onMessage.addListener(function (request, sender) {
+  console.log("sender", sender, request);
+  if (request.openExtension) {
     focusOrCreateTab(chrome.runtime.getURL("/jocker.html"));
+  }
+
+  if (request.type === "setAccessToken") {
+    jikeAccessToken = request.accessToken;
+  }
+
+  if (request.type === "setUsername") {
+    jikeUsername = request.username;
+  }
+});
+
+// background.js
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.type === "fetchJikeApiData") {
+    fetch(request.api, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        origin: "https://web.okjike.com",
+        "x-jike-access-token": jikeAccessToken,
+      },
+      body: JSON.stringify({
+        ...request.body,
+        username: jikeUsername,
+      }),
+      credentials: "include",
+    })
+      .then((r) => r.json())
+      .then((data) => sendResponse({ data }))
+      .catch((err) => sendResponse({ error: err.toString() }));
+    return true;
   }
 });

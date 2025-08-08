@@ -37,6 +37,9 @@ Jocker 是一款 Chrome 插件，基于 Manifest V3 标准进行开发，请使�
 - 在图文模式下，点击右下角的下载按钮，可以下载当前主题下的动态数据，下载后，csv文件可以导入Notion或者用Excel、文本编辑器查看。
 
 ## 更新日志
+#### v3.1.4
+2025.08.08 适配升级后的即刻网页数据
+
 #### v3.1.2
 2024.01.05 支持的功能
 - 可以查看导出收藏的动态了，并且可以按作者分类查看
@@ -52,4 +55,4 @@ Jocker 是一款 Chrome 插件，基于 Manifest V3 标准进行开发，请使�
 
 ## 其他
 - 如果有什么问题或建议，可以到[Telegram讨论组](https://t.me/joinchat/eV5l2_DxlHI0NWNl)反馈
-- 如果喜欢这个工具，欢迎[赞助开发者](http://afdian.net/@soyaine)
+- 如果喜欢这个工具，欢迎[赞助开发者](https://afdian.com/a/jocker)
