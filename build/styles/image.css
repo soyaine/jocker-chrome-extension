@@ -1,0 +1,96 @@
+.p-pics {
+    display: grid;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  
+  /* 单张图片 */
+  .p-pics-1 {
+    grid-template-columns: minmax(0, 300px);  
+  }
+  
+  /* 两张图片 */
+  .p-pics-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  /* 三张图片 */
+  .p-pics-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  /* 四张图片 */
+  .p-pics-4 {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+  }
+  
+  /* 多张图片 */
+  .p-pics-5, .p-pics-6, .p-pics-7, .p-pics-8, .p-pics-9 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .p-pic {
+    width: 100%;
+    border-radius: 8px;
+    transition: transform 0.2s ease;
+    cursor: pointer;
+  }
+  
+  /* 宽图片 */
+  .p-pic-wide {
+    grid-column: span 2;
+    height: 180px;  
+    object-fit: cover;
+  }
+  
+  /* 高图片 */
+  .p-pic-tall {
+    grid-row: span 2;
+    height: 260px; 
+    object-fit: cover;
+  }
+  
+  /* 方形图片 */
+  .p-pic-square {
+    aspect-ratio: 1;
+    object-fit: cover;
+  }
+  
+  .p-pic:hover {
+    transform: scale(1.01);
+  }
+  
+  /* 图片预览相关样式 */
+  .image-preview-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 1000;
+    cursor: zoom-out;
+  }
+  
+  .image-preview-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 90%;
+    max-height: 90vh;
+  }
+  
+  .image-preview {
+    max-width: 100%;
+    max-height: 90vh;
+    object-fit: contain;
+  }
+  
+  .image-preview-overlay.active {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }

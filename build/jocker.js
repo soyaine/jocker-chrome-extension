@@ -194,7 +194,19 @@ function loadPostsDefault(postsElem, nodes) {
 
     const dateElem = document.createElement("span");
     dateElem.setAttribute("class", "p-date");
-    dateElem.innerText = new Date(post.createdAt).toLocaleString();
+    const date = new Date(post.createdAt);
+    
+    // 格式化日期显示
+    const isThisYear = date.getFullYear() === new Date().getFullYear();
+    
+    let dateStr;
+    if (isThisYear) {
+      dateStr = `${date.getFullYear()}年${(date.getMonth() + 1)}月${date.getDate()}日 ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+    } else {
+      dateStr = `${date.getFullYear()}年${(date.getMonth() + 1)}月${date.getDate()}日 ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+    }
+    
+    dateElem.innerText = dateStr;
     postElem.appendChild(dateElem);
 
     const contentElem = document.createElement("div");
@@ -213,25 +225,50 @@ function loadPostsDefault(postsElem, nodes) {
 
     if (post.pictures && post.pictures.length) {
       const pics = document.createElement("div");
-      pics.setAttribute("class", "p-pics");
+      pics.setAttribute("class", `p-pics p-pics-${post.pictures.length}`);
 
-      post.pictures.forEach((pic) => {
-        const picElem = document.createElement("img");
-        picElem.setAttribute("class", "p-pic");
-        picElem.setAttribute("src", pic.picUrl);
+      const loadImage = (pic) => {
+        return new Promise((resolve) => {
+          const img = new Image();
+          img.onload = () => resolve({
+            url: pic.picUrl,
+            width: img.width,
+            height: img.height,
+            ratio: img.width / img.height
+          });
+          img.src = pic.picUrl;
+        });
+      };
 
-        pics.appendChild(picElem);
+      Promise.all(post.pictures.map(loadImage)).then(images => {
+        images.forEach(imgData => {
+          const picElem = document.createElement("img");
+          // 修改这里：当只有一张图片时不添加比例相关的类
+          picElem.setAttribute("class", `p-pic ${post.pictures.length === 1 ? '' : 
+            (imgData.ratio > 1.3 ? 'p-pic-wide' : imgData.ratio < 0.8 ? 'p-pic-tall' : 'p-pic-square')}`);
+          picElem.setAttribute("src", imgData.url);
+          
+          picElem.addEventListener("click", function() {
+            const overlay = document.querySelector(".image-preview-overlay");
+            const previewImg = overlay.querySelector(".image-preview");
+            previewImg.src = imgData.url;
+            overlay.classList.add("active");
+          });
+
+          pics.appendChild(picElem);
+        });
       });
 
       postElem.appendChild(pics);
     }
 
     if (post.video) {
-      const videoElem = document.createElement("video");
-      videoElem.setAttribute("controls", "controls");
-      videoElem.setAttribute("class", "p-video");
-      videoElem.setAttribute("src", post.video);
-      postElem.appendChild(videoElem);
+      const videoLink = document.createElement("a");
+      videoLink.setAttribute("class", "p-link");
+      videoLink.setAttribute("href", `https://web.okjike.com/originalPost/${post.id}`);
+      videoLink.setAttribute("target", "_blank");
+      videoLink.innerText = "查看视频动态 →";
+      postElem.appendChild(videoLink);
     }
 
     if (post.target) {
@@ -551,7 +588,15 @@ window.onkeydown = function (event) {
   }
 };
 
-function onload() {}
+function onload() {
+  // ... existing code ...
+  
+  // 添加图片预览遮罩层的关闭事件
+  const overlay = document.querySelector(".image-preview-overlay");
+  overlay.addEventListener("click", function() {
+    this.classList.remove("active");
+  });
+}
 
 document.addEventListener("DOMContentLoaded", function () {
   onload();
